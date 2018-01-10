@@ -1,9 +1,15 @@
 @:expose
 class Chxess {
+
     public function new() {
-        trace("hello world");
     }
-    public function foo() {
-        trace("test");
+
+    public function foo() : String {
+        return "foo";
     }
+
+    public function bar() : String {
+        return "baz!";
+    }
+
 }
