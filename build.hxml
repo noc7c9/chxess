@@ -1,0 +1,5 @@
+-cp src
+
+Chxess
+
+-js build/chxess.js
