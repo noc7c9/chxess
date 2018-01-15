@@ -1,4 +1,6 @@
-@:expose
+package chxess;
+
+@:expose("Chxess")
 class Chxess {
 
     public function new() {

@@ -1,5 +1,5 @@
 -cp src
 
-Chxess
+chxess.Chxess
 
 -js build/chxess.js
