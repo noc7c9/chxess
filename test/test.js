@@ -17,3 +17,21 @@ test('initial board layout is correct', t => {
 
     t.deepEqual(initialLayout, chx.getBoard())
 })
+
+test('board clearing', t => {
+    const chx = new Chxess()
+
+    const expectedLayout = [
+        [ '', '', '', '', '', '', '', '' ],
+        [ '', '', '', '', '', '', '', '' ],
+        [ '', '', '', '', '', '', '', '' ],
+        [ '', '', '', '', '', '', '', '' ],
+        [ '', '', '', '', '', '', '', '' ],
+        [ '', '', '', '', '', '', '', '' ],
+        [ '', '', '', '', '', '', '', '' ],
+        [ '', '', '', '', '', '', '', '' ],
+    ];
+
+    chx.clearBoard()
+    t.deepEqual(expectedLayout, chx.getBoard())
+})

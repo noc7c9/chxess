@@ -119,6 +119,12 @@ class Chxess {
         }
     }
 
+    public function clearBoard() {
+        for (key in board.keys()) {
+            board.remove(key);
+        }
+    }
+
     public function getBoard():Array<Array<String>> {
         var ranks = new Array<Array<String>>();
         for (r in Rank.createAll()) {
