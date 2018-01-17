@@ -21,8 +21,28 @@ class Coord {
     public var file(default, null):File;
 
     public static function fromString(coord) {
-        var file = File.createByName(coord.charAt(0).toUpperCase());
-        var rank = Rank.createByName('R' + coord.charAt(1).toUpperCase());
+        var file = switch (coord.charAt(0).toUpperCase()) {
+            case 'A': File.A;
+            case 'B': File.B;
+            case 'C': File.C;
+            case 'D': File.D;
+            case 'E': File.E;
+            case 'F': File.F;
+            case 'G': File.G;
+            case 'H': File.H;
+            case _: throw 'Error: Invalid coord file: ' + coord.charAt(1);
+        };
+        var rank = switch (coord.charAt(0).toUpperCase()) {
+            case '1': Rank.R1;
+            case '2': Rank.R2;
+            case '3': Rank.R3;
+            case '4': Rank.R4;
+            case '5': Rank.R5;
+            case '6': Rank.R6;
+            case '7': Rank.R7;
+            case '8': Rank.R8;
+            case _: throw 'Error: Invalid coord rank: ' + coord.charAt(0);
+        };
         return new Coord(rank, file);
     }
 
@@ -53,6 +73,24 @@ enum PieceType {
 class Piece {
     public var color(default, null):PieceColor;
     public var type(default, null):PieceType;
+
+    public static function fromString(piece) {
+        var color = switch (piece.charAt(0).toUpperCase()) {
+            case 'W': PieceColor.White;
+            case 'B': PieceColor.Black;
+            case _: throw 'Error: Invalid piece color: ' + piece.charAt(0);
+        };
+        var type = switch (piece.charAt(1).toUpperCase()) {
+            case 'P': PieceType.Pawn;
+            case 'N': PieceType.Knight;
+            case 'B': PieceType.Bishop;
+            case 'R': PieceType.Rook;
+            case 'Q': PieceType.Queen;
+            case 'K': PieceType.King;
+            case _: throw 'Error: Invalid piece type: ' + piece.charAt(1);
+        };
+        return new Piece(color, type);
+    }
 
     public function new(color, type) {
         this.color = color;
@@ -119,12 +157,6 @@ class Chxess {
         }
     }
 
-    public function clearBoard() {
-        for (key in board.keys()) {
-            board.remove(key);
-        }
-    }
-
     public function getBoard():Array<Array<String>> {
         var ranks = new Array<Array<String>>();
         for (r in Rank.createAll()) {
@@ -141,6 +173,30 @@ class Chxess {
         }
         ranks.reverse();
         return ranks;
+    }
+
+    public function setBoard(newBoard:Array<Array<String>>) {
+        for (r in 0...8) {
+            var rank = Rank.createByIndex(7 - r);
+            for (f in 0...8) {
+                var file = File.createByIndex(f);
+
+                var coord = new Coord(rank, file);
+                var pieceString = newBoard[r][f];
+                if (pieceString == '') {
+                    board.remove(coord);
+                } else {
+                    var piece = Piece.fromString(pieceString);
+                    board.set(coord, piece);
+                }
+            }
+        }
+    }
+
+    public function clearBoard() {
+        for (key in board.keys()) {
+            board.remove(key);
+        }
     }
 
 }
