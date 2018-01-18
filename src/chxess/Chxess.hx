@@ -55,6 +55,12 @@ class Coord {
         return rank.getIndex() + 8 * file.getIndex();
     }
 
+    public function toString() {
+        var fileString = file.getName().toLowerCase();
+        var rankString = rank.getName().charAt(1);
+        return fileString + rankString;
+    }
+
 }
 
 
@@ -209,6 +215,57 @@ class Chxess {
             var piece = Piece.fromString(piece);
             board.set(coord, piece);
         }
+    }
+
+    public function getMoves(coord) {
+        var coord = Coord.fromString(coord);
+        var moveCoords = getRookMoveCoords(coord);
+        return moveCoordsToStrings(moveCoords, 'R');
+    }
+
+    function moveCoordsToStrings(
+            moveCoords:Array<Coord>, piecePrefix:String):Array<String> {
+        return moveCoords.map(function (moveCoord) {
+            return piecePrefix + moveCoord.toString();
+        });
+    }
+
+    function getRookMoveCoords(coord:Coord):Array<Coord> {
+        var moves = [];
+        for (dir in [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
+            for (coord in getAllCoordsInDir(coord, dir[0], dir[1])) {
+                moves.push(coord);
+            }
+        }
+        return moves;
+    }
+
+    function getAllCoordsInDir(coord:Coord, rankDir:Int, fileDir:Int):Array<Coord> {
+        var moves = [];
+        while (coord != null) {
+            coord = getCoordInDirection(coord, rankDir, fileDir);
+            if (coord != null) {
+                moves.push(coord);
+            }
+        }
+        return moves;
+    }
+
+    function getCoordInDirection(startCoord:Coord, rankDir:Int, fileDir:Int):Coord {
+        var rankIndex = startCoord.rank.getIndex();
+        var fileIndex = startCoord.file.getIndex();
+
+        rankIndex += rankDir;
+        fileIndex += fileDir;
+
+        // make sure the new coord is within bounds
+        if (rankIndex < 0 || rankIndex > 7 || fileIndex < 0 || fileIndex > 7) {
+            return null;
+        }
+
+        var newRank = Rank.createByIndex(rankIndex);
+        var newFile = File.createByIndex(fileIndex);
+        return new Coord(newRank, newFile);
     }
 
 }
