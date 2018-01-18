@@ -30,9 +30,9 @@ class Coord {
             case 'F': File.F;
             case 'G': File.G;
             case 'H': File.H;
-            case _: throw 'Error: Invalid coord file: ' + coord.charAt(1);
+            case _: throw 'Error: Invalid coord file: ' + coord.charAt(0);
         };
-        var rank = switch (coord.charAt(0).toUpperCase()) {
+        var rank = switch (coord.charAt(1).toUpperCase()) {
             case '1': Rank.R1;
             case '2': Rank.R2;
             case '3': Rank.R3;
@@ -41,7 +41,7 @@ class Coord {
             case '6': Rank.R6;
             case '7': Rank.R7;
             case '8': Rank.R8;
-            case _: throw 'Error: Invalid coord rank: ' + coord.charAt(0);
+            case _: throw 'Error: Invalid coord rank: ' + coord.charAt(1);
         };
         return new Coord(rank, file);
     }
@@ -163,11 +163,7 @@ class Chxess {
             var file = new Array<String>();
             for (f in File.createAll()) {
                 var piece = board.get(new Coord(r, f));
-                if (piece != null) {
-                    file.push(piece.toString());
-                } else {
-                    file.push('');
-                }
+                file.push(piece != null ? piece.toString() : '');
             }
             ranks.push(file);
         }
@@ -196,6 +192,22 @@ class Chxess {
     public function clearBoard() {
         for (key in board.keys()) {
             board.remove(key);
+        }
+    }
+
+    public function getSquare(coord) {
+        var coord = Coord.fromString(coord);
+        var piece = board.get(coord);
+        return piece != null ? piece.toString() : '';
+    }
+
+    public function setSquare(coord, piece) {
+        var coord = Coord.fromString(coord);
+        if (piece == '') {
+            board.remove(coord);
+        } else {
+            var piece = Piece.fromString(piece);
+            board.set(coord, piece);
         }
     }
 
