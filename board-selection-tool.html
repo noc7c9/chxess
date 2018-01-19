@@ -1,0 +1,278 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Grid Select</title>
+        <style type='text/css'>
+            .container {
+                display: flex;
+                flex-direction: row;
+            }
+            .container > table {
+                flex: 0 0;
+            }
+            .container > div {
+                flex: 1 1 200px;
+                display: flex;
+                flex-direction: column;
+            }
+            .container > div > button {
+                flex: 0 0;
+            }
+            .container > div > textarea {
+                flex: 1 1;
+            }
+
+            table {
+                border-collapse: collapse;
+                user-select: none;
+                -moz-user-select: none;
+            }
+            td {
+                width: 30px;
+                height: 30px;
+                text-align: center;
+                font-weight: bold;
+            }
+
+            tr:nth-child(2n+1):not(:first-child) > td:nth-child(2n):not(:last-child),
+            tr:nth-child(2n):not(:last-child) > td:nth-child(2n+1):not(:first-child) {
+                background-color: rgb(209, 139, 71);
+                cursor: pointer;
+            }
+            tr:nth-child(2n):not(:last-child) > td:nth-child(2n):not(:last-child),
+            tr:nth-child(2n+1):not(:first-child) > td:nth-child(2n+1):not(:first-child) {
+                background-color: rgb(255, 206, 158);
+                cursor: pointer;
+            }
+
+            tr:nth-child(2n+1):not(:first-child) > td[data-selected='true']:nth-child(2n):not(:last-child),
+            tr:nth-child(2n):not(:last-child) > td[data-selected='true']:nth-child(2n+1):not(:first-child) {
+                background-color: rgb(33, 119, 249);
+            }
+            tr:nth-child(2n):not(:last-child) > td[data-selected='true']:nth-child(2n):not(:last-child),
+            tr:nth-child(2n+1):not(:first-child) > td[data-selected='true']:nth-child(2n+1):not(:first-child) {
+                background-color: rgb(112, 164, 255);
+            }
+
+            td.white-piece {
+                color: white;
+            }
+        </style>
+    </head>
+    <body>
+        <div class='container'>
+            <table id='board'>
+                <tr>
+                    <td> </td>
+                    <td>a</td>
+                    <td>b</td>
+                    <td>c</td>
+                    <td>d</td>
+                    <td>e</td>
+                    <td>f</td>
+                    <td>g</td>
+                    <td>h</td>
+                    <td> </td>
+                </tr>
+                <tr>
+                    <td>8</td>
+                    <td id='a8'> </td>
+                    <td id='b8'> </td>
+                    <td id='c8'> </td>
+                    <td id='d8'> </td>
+                    <td id='e8'> </td>
+                    <td id='f8'> </td>
+                    <td id='g8'> </td>
+                    <td id='h8'> </td>
+                    <td>8</td>
+                </tr>
+                <tr>
+                    <td>7</td>
+                    <td id='a7'> </td>
+                    <td id='b7'> </td>
+                    <td id='c7'> </td>
+                    <td id='d7'> </td>
+                    <td id='e7'> </td>
+                    <td id='f7'> </td>
+                    <td id='g7'> </td>
+                    <td id='h7'> </td>
+                    <td>7</td>
+                </tr>
+                <tr>
+                    <td>6</td>
+                    <td id='a6'> </td>
+                    <td id='b6'> </td>
+                    <td id='c6'> </td>
+                    <td id='d6'> </td>
+                    <td id='e6'> </td>
+                    <td id='f6'> </td>
+                    <td id='g6'> </td>
+                    <td id='h6'> </td>
+                    <td>6</td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td id='a5'> </td>
+                    <td id='b5'> </td>
+                    <td id='c5'> </td>
+                    <td id='d5'> </td>
+                    <td id='e5'> </td>
+                    <td id='f5'> </td>
+                    <td id='g5'> </td>
+                    <td id='h5'> </td>
+                    <td>5</td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td id='a4'> </td>
+                    <td id='b4'> </td>
+                    <td id='c4'> </td>
+                    <td id='d4'> </td>
+                    <td id='e4'> </td>
+                    <td id='f4'> </td>
+                    <td id='g4'> </td>
+                    <td id='h4'> </td>
+                    <td>4</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td id='a3'> </td>
+                    <td id='b3'> </td>
+                    <td id='c3'> </td>
+                    <td id='d3'> </td>
+                    <td id='e3'> </td>
+                    <td id='f3'> </td>
+                    <td id='g3'> </td>
+                    <td id='h3'> </td>
+                    <td>3</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td id='a2'> </td>
+                    <td id='b2'> </td>
+                    <td id='c2'> </td>
+                    <td id='d2'> </td>
+                    <td id='e2'> </td>
+                    <td id='f2'> </td>
+                    <td id='g2'> </td>
+                    <td id='h2'> </td>
+                    <td>2</td>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td id='a1'> </td>
+                    <td id='b1'> </td>
+                    <td id='c1'> </td>
+                    <td id='d1'> </td>
+                    <td id='e1'> </td>
+                    <td id='f1'> </td>
+                    <td id='g1'> </td>
+                    <td id='h1'> </td>
+                    <td>1</td>
+                </tr>
+                <tr>
+                    <td> </td>
+                    <td>a</td>
+                    <td>b</td>
+                    <td>c</td>
+                    <td>d</td>
+                    <td>e</td>
+                    <td>f</td>
+                    <td>g</td>
+                    <td>h</td>
+                    <td> </td>
+                </tr>
+            </table>
+            <div>
+                <textarea readonly id='selected-display'></textarea>
+                <button id='clear-button'>Clear Selected</button>
+            </div>
+        </div>
+        <script>
+            const selected = new Set();
+            const board = document.getElementById('board');
+            const selectedDisplay = document.getElementById('selected-display');
+            const clearButton = document.getElementById('clear-button');
+            selectedDisplay.value = '';
+
+            let shiftDown = false;
+            let ctrlDown = false;
+
+            document.addEventListener('keydown', function (e) {
+                if (e.keyCode === KeyEvent.DOM_VK_CONTROL) {
+                    ctrlDown = true;
+                }
+                if (e.keyCode === KeyEvent.DOM_VK_SHIFT) {
+                    shiftDown = true;
+                }
+            })
+
+            document.addEventListener('keyup', function (e) {
+                if (e.keyCode === KeyEvent.DOM_VK_CONTROL) {
+                    ctrlDown = false;
+                }
+                if (e.keyCode === KeyEvent.DOM_VK_SHIFT) {
+                    shiftDown = false;
+                }
+            })
+
+            function updateSelectedDisplay() {
+                selectedDisplay.value = Array.from(selected).sort().join(', ');
+            }
+
+            function toggleSelectedStatus(square, target) {
+                target = target || document.getElementById(square);
+
+                if (target.dataset['selected']) {
+                    delete target.dataset['selected'];
+                    selected.delete(square);
+                } else {
+                    target.dataset['selected'] = true;
+                    selected.add(square);
+                }
+            }
+
+            const pieces = ['', 'p', 'N', 'B', 'R', 'Q', 'K'];
+            function cyclePiece(square, target) {
+                target = target || document.getElementById(square);
+
+                const currPieceIndex = pieces.indexOf(target.innerHTML.trim());
+                target.innerHTML = pieces[currPieceIndex + 1] || '';
+            }
+
+            function toggleColor(square, target) {
+                target = target || document.getElementById(square);
+                target.classList.toggle('white-piece');
+            }
+
+            board.addEventListener('click', function (e) {
+                const target = e.target;
+                const square = target.id;
+                if (square) {
+                    if (shiftDown) {
+                        cyclePiece(square, target);
+                    } else if (ctrlDown) {
+                        toggleColor(square, target);
+                    } else {
+                        toggleSelectedStatus(square, target);
+                    }
+                }
+                updateSelectedDisplay();
+                e.preventDefault();
+            })
+
+            clearButton.addEventListener('click', function () {
+                selected.clear();
+                for (e of document.getElementsByTagName('td')) {
+                    if (e.id) {
+                        e.innerHTML = '';
+                        e.classList.remove('white-piece');
+                        delete e.dataset['selected'];
+                    }
+                }
+                updateSelectedDisplay();
+            })
+        </script>
+    </body>
+</html>
