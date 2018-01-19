@@ -87,7 +87,7 @@ class Piece {
             case _: throw 'Error: Invalid piece color: ' + piece.charAt(0);
         };
         var type = switch (piece.charAt(1).toUpperCase()) {
-            case 'P': PieceType.Pawn;
+            case '': PieceType.Pawn;
             case 'N': PieceType.Knight;
             case 'B': PieceType.Bishop;
             case 'R': PieceType.Rook;
@@ -108,15 +108,18 @@ class Piece {
             case White: 'w';
             case Black: 'b';
         }
-        var pieceString = switch (type) {
-            case Pawn: 'P';
+        return colorString + getPieceString();
+    }
+
+    public function getPieceString() {
+        return switch (type) {
+            case Pawn: '';
             case Knight: 'N';
             case Bishop: 'B';
             case Rook: 'R';
             case Queen: 'Q';
             case King: 'K';
         }
-        return colorString + pieceString;
     }
 
 }
