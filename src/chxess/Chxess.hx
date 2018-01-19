@@ -222,8 +222,24 @@ class Chxess {
 
     public function getMoves(coord) {
         var coord = Coord.fromString(coord);
-        var moveCoords = getRookMoveCoords(coord);
-        return moveCoordsToStrings(moveCoords, 'R');
+        var piece = board.get(coord);
+
+        if (piece == null) {
+            return [];
+        } else {
+            var moveCoords;
+            switch (piece.type) {
+                case Rook:
+                    moveCoords = getRookMoveCoords(coord);
+                case Bishop:
+                    moveCoords = getBishopMoveCoords(coord);
+                case Queen:
+                    moveCoords = getQueenMoveCoords(coord);
+                default:
+                    moveCoords = [];
+            }
+            return moveCoordsToStrings(moveCoords, piece.getPieceString());
+        }
     }
 
     function moveCoordsToStrings(
@@ -233,9 +249,25 @@ class Chxess {
         });
     }
 
+    function getQueenMoveCoords(coord:Coord):Array<Coord> {
+        return getRiderMoveCoords(coord, [
+            [1, 1], [1, -1], [-1, 1], [-1, -1],
+            [1, 0], [-1, 0], [0, 1], [0, -1],
+        ]);
+    }
+
+    function getBishopMoveCoords(coord:Coord):Array<Coord> {
+        return getRiderMoveCoords(coord, [[1, 1], [1, -1], [-1, 1], [-1, -1]]);
+    }
+
     function getRookMoveCoords(coord:Coord):Array<Coord> {
+        return getRiderMoveCoords(coord, [[1, 0], [-1, 0], [0, 1], [0, -1]]);
+    }
+
+    function getRiderMoveCoords(coord:Coord,
+            dirs:Array<Array<Int>>):Array<Coord> {
         var moves = [];
-        for (dir in [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
+        for (dir in dirs) {
             for (coord in getAllCoordsInDir(coord, dir[0], dir[1])) {
                 moves.push(coord);
             }
