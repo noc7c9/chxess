@@ -58,6 +58,28 @@ test('clearing the board', t => {
     t.deepEqual(expectedLayout, chx.getBoard())
 })
 
+test('getBoard and setBoard use same format', t => {
+    const chx = new Chxess()
+    const originalLayout = [
+        ['',   '',   'b',  '',   'b',  'wQ', 'bQ', '',   ],
+        ['',   'b',  '',   'wR', '',   '',   'b',  '',   ],
+        ['wB', 'bK', '',   'b',  '',   '',   'w',  'bR', ],
+        ['w',  'wN', 'b',  'bB', 'w',  '',   'b',  '',   ],
+        ['',   '',   '',   'wN', 'wR', 'wB', 'b',  '',   ],
+        ['',   'bB', 'wK', '',   'w',  '',   '',   '',   ],
+        ['',   '',   'w',  '',   '',   '',   'w',  '',   ],
+        ['w',  '',   '',   'bR', 'bN', 'w',  'bN', '',   ],
+    ]
+    chx.setBoard(originalLayout)
+
+    const exportedLayout = chx.getBoard();
+
+    chx.clearBoard()
+    chx.setBoard(exportedLayout)
+
+    t.deepEqual(originalLayout, chx.getBoard())
+})
+
 
 test('getting arbitrary squares', t => {
     const chx = new Chxess()
