@@ -166,10 +166,10 @@ class Chxess {
         }
     }
 
-    public function getBoard():Array<Array<String>> {
-        var ranks = new Array<Array<String>>();
+    public function getBoard() {
+        var ranks = [];
         for (r in Rank.createAll()) {
-            var file = new Array<String>();
+            var file = [];
             for (f in File.createAll()) {
                 var piece = board.get(new Coord(r, f));
                 file.push(piece != null ? piece.toString() : '');
@@ -180,7 +180,7 @@ class Chxess {
         return ranks;
     }
 
-    public function setBoard(newBoard:Array<Array<String>>) {
+    public function setBoard(newBoard) {
         for (r in 0...8) {
             var rank = Rank.createByIndex(7 - r);
             for (f in 0...8) {
@@ -248,43 +248,42 @@ class Chxess {
         }
     }
 
-    function moveCoordsToStrings(
-            moveCoords:Array<Coord>, piecePrefix:String):Array<String> {
+    function moveCoordsToStrings(moveCoords, piecePrefix:String) {
         return moveCoords.map(function (moveCoord) {
             return piecePrefix + moveCoord.toString();
         });
     }
 
-    function getQueenMoveCoords(coord:Coord):Array<Coord> {
+    function getQueenMoveCoords(coord) {
         return getRiderMoveCoords(coord, [
             [1, 1], [1, -1], [-1, 1], [-1, -1],
             [1, 0], [-1, 0], [0, 1], [0, -1],
         ]);
     }
 
-    function getBishopMoveCoords(coord:Coord):Array<Coord> {
+    function getBishopMoveCoords(coord) {
         return getRiderMoveCoords(coord, [[1, 1], [1, -1], [-1, 1], [-1, -1]]);
     }
 
-    function getRookMoveCoords(coord:Coord):Array<Coord> {
+    function getRookMoveCoords(coord) {
         return getRiderMoveCoords(coord, [[1, 0], [-1, 0], [0, 1], [0, -1]]);
     }
 
-    function getKnightMoveCoords(coord:Coord):Array<Coord> {
+    function getKnightMoveCoords(coord) {
         return getLeaperMoveCoords(coord, [
             [-1, -2], [-1, 2], [-2, -1], [-2, 1],
             [1, -2], [1, 2], [2, -1], [2, 1],
         ]);
     }
 
-    function getKingMoveCoords(coord:Coord):Array<Coord> {
+    function getKingMoveCoords(coord) {
         return getLeaperMoveCoords(coord, [
             [0, 1], [1, 1], [1, 0], [1, -1],
             [0, -1], [-1, -1], [-1, 0], [-1, 1],
         ]);
     }
 
-    function getPawnMoveCoords(startCoord:Coord, color):Array<Coord> {
+    function getPawnMoveCoords(startCoord, color) {
         var moves = [];
         var rankDir = switch (color) {
             case White: 1;
@@ -312,8 +311,7 @@ class Chxess {
         return moves;
     }
 
-    function getRiderMoveCoords(startCoord:Coord,
-            dirs:Array<Array<Int>>):Array<Coord> {
+    function getRiderMoveCoords(startCoord, dirs:Array<Array<Int>>) {
         var moves = [];
         for (dir in dirs) {
             for (coord in getAllCoordsInDir(startCoord, dir[0], dir[1])) {
@@ -323,8 +321,7 @@ class Chxess {
         return moves;
     }
 
-    function getLeaperMoveCoords(startCoord:Coord,
-            offsets:Array<Array<Int>>):Array<Coord> {
+    function getLeaperMoveCoords(startCoord, offsets:Array<Array<Int>>) {
         var moves = [];
         for (offset in offsets) {
             var coord = getOffsetCoord(startCoord, offset[0], offset[1]);
@@ -335,7 +332,7 @@ class Chxess {
         return moves;
     }
 
-    function getAllCoordsInDir(coord:Coord, rankDir:Int, fileDir:Int):Array<Coord> {
+    function getAllCoordsInDir(coord, rankDir, fileDir) {
         var moves = [];
         while (coord != null) {
             coord = getOffsetCoord(coord, rankDir, fileDir);
@@ -346,7 +343,7 @@ class Chxess {
         return moves;
     }
 
-    function getOffsetCoord(startCoord:Coord, rankOffset:Int, fileOffset:Int):Coord {
+    function getOffsetCoord(startCoord:Coord, rankOffset, fileOffset) {
         var rankIndex = startCoord.rank.getIndex();
         var fileIndex = startCoord.file.getIndex();
 
