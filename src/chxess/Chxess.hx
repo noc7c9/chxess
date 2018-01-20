@@ -237,6 +237,8 @@ class Chxess {
                     moveCoords = getQueenMoveCoords(coord);
                 case Knight:
                     moveCoords = getKnightMoveCoords(coord);
+                case King:
+                    moveCoords = getKingMoveCoords(coord);
                 default:
                     moveCoords = [];
             }
@@ -266,31 +268,38 @@ class Chxess {
         return getRiderMoveCoords(coord, [[1, 0], [-1, 0], [0, 1], [0, -1]]);
     }
 
-    function getRiderMoveCoords(coord:Coord,
+    function getKnightMoveCoords(coord:Coord):Array<Coord> {
+        return getLeaperMoveCoords(coord, [
+            [-1, -2], [-1, 2], [-2, -1], [-2, 1],
+            [1, -2], [1, 2], [2, -1], [2, 1],
+        ]);
+    }
+
+    function getKingMoveCoords(coord:Coord):Array<Coord> {
+        return getLeaperMoveCoords(coord, [
+            [0, 1], [1, 1], [1, 0], [1, -1],
+            [0, -1], [-1, -1], [-1, 0], [-1, 1],
+        ]);
+    }
+
+    function getRiderMoveCoords(startCoord:Coord,
             dirs:Array<Array<Int>>):Array<Coord> {
         var moves = [];
         for (dir in dirs) {
-            for (coord in getAllCoordsInDir(coord, dir[0], dir[1])) {
+            for (coord in getAllCoordsInDir(startCoord, dir[0], dir[1])) {
                 moves.push(coord);
             }
         }
         return moves;
     }
 
-    function getKnightMoveCoords(startCoord:Coord):Array<Coord> {
+    function getLeaperMoveCoords(startCoord:Coord,
+            offsets:Array<Array<Int>>):Array<Coord> {
         var moves = [];
-        for (rSign in [-1, 1]) {
-            for (fSign in [-1, 1]) {
-                var coord;
-                coord = getOffsetCoord(startCoord, rSign, 2 * fSign);
-                if (coord != null) {
-                    moves.push(coord);
-                }
-
-                coord = getOffsetCoord(startCoord, 2 * rSign, fSign);
-                if (coord != null) {
-                    moves.push(coord);
-                }
+        for (offset in offsets) {
+            var coord = getOffsetCoord(startCoord, offset[0], offset[1]);
+            if (coord != null) {
+                moves.push(coord);
             }
         }
         return moves;
