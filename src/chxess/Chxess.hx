@@ -133,6 +133,7 @@ class Piece {
 class Chxess {
 
     var board:HashMap<Coord, Piece>;
+    var isWhitesTurn = true;
 
     public function new() {
         board = new HashMap();
@@ -163,6 +164,25 @@ class Chxess {
                 new Piece(PieceColor.White, PieceType.Pawn));
             board.set(new Coord(Rank.R7, file),
                 new Piece(PieceColor.Black, PieceType.Pawn));
+        }
+    }
+
+    public function getTurn() {
+        if (isWhitesTurn) {
+            return 'w';
+        } else {
+            return 'b';
+        }
+    }
+
+    public function setTurn(turn) {
+        switch (turn) {
+            case 'w':
+                isWhitesTurn = true;
+            case 'b':
+                isWhitesTurn = false;
+            default:
+                throw 'Error: Invalid turn value: ' + turn;
         }
     }
 
