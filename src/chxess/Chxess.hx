@@ -239,6 +239,8 @@ class Chxess {
                     moveCoords = getKnightMoveCoords(coord);
                 case King:
                     moveCoords = getKingMoveCoords(coord);
+                case Pawn:
+                    moveCoords = getPawnMoveCoords(coord, piece.color);
                 default:
                     moveCoords = [];
             }
@@ -280,6 +282,34 @@ class Chxess {
             [0, 1], [1, 1], [1, 0], [1, -1],
             [0, -1], [-1, -1], [-1, 0], [-1, 1],
         ]);
+    }
+
+    function getPawnMoveCoords(startCoord:Coord, color):Array<Coord> {
+        var moves = [];
+        var rankDir = switch (color) {
+            case White: 1;
+            case Black: -1;
+        };
+        var homeRow = switch (color) {
+            case White: Rank.R2;
+            case Black: Rank.R7;
+        };
+
+        // single pawn push
+        var coord = getOffsetCoord(startCoord, rankDir, 0);
+        if (coord != null) {
+            moves.push(coord);
+        }
+
+        // double pawn push
+        if (startCoord.rank == homeRow) {
+            var coord = getOffsetCoord(startCoord, rankDir * 2, 0);
+            if (coord != null) {
+                moves.push(coord);
+            }
+        }
+
+        return moves;
     }
 
     function getRiderMoveCoords(startCoord:Coord,
