@@ -235,6 +235,8 @@ class Chxess {
                     moveCoords = getBishopMoveCoords(coord);
                 case Queen:
                     moveCoords = getQueenMoveCoords(coord);
+                case Knight:
+                    moveCoords = getKnightMoveCoords(coord);
                 default:
                     moveCoords = [];
             }
@@ -275,10 +277,29 @@ class Chxess {
         return moves;
     }
 
+    function getKnightMoveCoords(startCoord:Coord):Array<Coord> {
+        var moves = [];
+        for (rSign in [-1, 1]) {
+            for (fSign in [-1, 1]) {
+                var coord;
+                coord = getOffsetCoord(startCoord, rSign, 2 * fSign);
+                if (coord != null) {
+                    moves.push(coord);
+                }
+
+                coord = getOffsetCoord(startCoord, 2 * rSign, fSign);
+                if (coord != null) {
+                    moves.push(coord);
+                }
+            }
+        }
+        return moves;
+    }
+
     function getAllCoordsInDir(coord:Coord, rankDir:Int, fileDir:Int):Array<Coord> {
         var moves = [];
         while (coord != null) {
-            coord = getCoordInDirection(coord, rankDir, fileDir);
+            coord = getOffsetCoord(coord, rankDir, fileDir);
             if (coord != null) {
                 moves.push(coord);
             }
@@ -286,12 +307,12 @@ class Chxess {
         return moves;
     }
 
-    function getCoordInDirection(startCoord:Coord, rankDir:Int, fileDir:Int):Coord {
+    function getOffsetCoord(startCoord:Coord, rankOffset:Int, fileOffset:Int):Coord {
         var rankIndex = startCoord.rank.getIndex();
         var fileIndex = startCoord.file.getIndex();
 
-        rankIndex += rankDir;
-        fileIndex += fileDir;
+        rankIndex += rankOffset;
+        fileIndex += fileOffset;
 
         // make sure the new coord is within bounds
         if (rankIndex < 0 || rankIndex > 7 || fileIndex < 0 || fileIndex > 7) {
