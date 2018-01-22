@@ -1,0 +1,660 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset='utf-8'>
+        <title>Board Tool</title>
+        <style type='text/css'>
+            .flex-hor {
+                display: flex;
+                flex-direction: row;
+            }
+            .flex-ver {
+                display: flex;
+                flex-direction: column;
+            }
+            .flex-size-expand {
+                flex: 1 1;
+            }
+            .flex-size-static {
+                flex: 0 0;
+            }
+
+            body {
+                height: 100vh;
+                margin: 0;
+                padding: 5px;
+                box-sizing: border-box;
+            }
+
+            table {
+                border-collapse: collapse;
+                user-select: none;
+                -moz-user-select: none;
+            }
+            td {
+                width: 30px;
+                height: 30px;
+                text-align: center;
+                font-weight: bold;
+            }
+
+            tr:nth-child(2n+1):not(:first-child)
+                    > td:nth-child(2n):not(:last-child),
+            tr:nth-child(2n):not(:last-child)
+                    > td:nth-child(2n+1):not(:first-child) {
+                background-color: rgb(209, 139, 71);
+                cursor: pointer;
+            }
+            tr:nth-child(2n):not(:last-child)
+                    > td:nth-child(2n):not(:last-child),
+            tr:nth-child(2n+1):not(:first-child)
+                    > td:nth-child(2n+1):not(:first-child) {
+                background-color: rgb(255, 206, 158);
+                cursor: pointer;
+            }
+
+            tr:nth-child(2n+1):not(:first-child)
+                    > td[data-selected='true']:nth-child(2n):not(:last-child),
+            tr:nth-child(2n):not(:last-child)
+                    > td[data-selected='true']:nth-child(2n+1):not(:first-child) {
+                background-color: rgb(33, 119, 249);
+            }
+            tr:nth-child(2n):not(:last-child)
+                    > td[data-selected='true']:nth-child(2n):not(:last-child),
+            tr:nth-child(2n+1):not(:first-child)
+                    > td[data-selected='true']:nth-child(2n+1):not(:first-child) {
+                background-color: rgb(112, 164, 255);
+            }
+
+            .piece-select-radio {
+                display: none;
+            }
+            .piece-select-radio:checked ~ .piece-select-button {
+                background-color: rgb(198, 212, 255);
+            }
+            .piece-select-button {
+                background-color: rgb(132, 162, 255);
+                width: 100%;
+                height: 100%;
+                display: block;
+            }
+
+            .piece {
+                background-size: contain;
+                background-position: center;
+                background-repeat: no-repeat;
+            }
+
+            .piece.white.rook {
+                background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIj48cGF0aCBkPSJNMTAgOTBsNy0xMGMyMS42ODctNC41NiAxOS4zMDctMTUuNDkgOC03MGgxMHY2LjQ4NWwxMCA5VjEwaDEwdjE1LjQ4NWwxMC05VjEwaDEwYy0xMS4zMDcgNTQuNTEtMTMuNjg3IDY1LjQ0IDggNzBsNyAxMHoiIGZpbGw9IiNmZmYiIHN0cm9rZT0iIzAwMCIgc3Ryb2tlLXdpZHRoPSIzIi8+PC9zdmc+');
+            }
+            .piece.white.bishop {
+                background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIj48cGF0aCBkPSJNOTAgOTBsLTctMTBjLTE3LjQ0NS0zLjY2OC0xOS4zMi0xMS4yMi0xMy41LTQyLjUtMS44NS0xLjU0Ny01LjMtNC44LTUuMy00LjgtMy44NjIgNC41NzItOC45MyA3Ljc5Ny0xNC4yIDkuMSA4LjEtMTUuNjUgNC42NDgtMjAuMDU3IDAtMzEuOCAwIDAtNC45MzkgMTcuODAxLTE5LjUgMjcuNUMzNi4zMiA2OC43OCAzNC40NDUgNzYuMzMyIDE3IDgwbC03IDEweiIgZmlsbD0iI2ZmZiIgZmlsbC1ydWxlPSJldmVub2RkIiBzdHJva2U9IiMwMDAiIHN0cm9rZS13aWR0aD0iMyIvPjwvc3ZnPg==');
+            }
+            .piece.white.knight {
+                background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIj48cGF0aCBkPSJNMTAgOTBsNy0xMGMzMy41MDItMTYuMjI2IDMzLTQwIDMzLTQwTDI1LjQgNTFsLTIuMy0xMi44QzM0LjEyIDMxLjMyMyA0Mi4yNTggMjIuNDY2IDUwIDEwbDYgOC43IDkgMS45LS4xIDkuMiA0LjYgNy41QzYzLjY4IDY4LjU4IDY1LjU1NSA3Ni4zMzIgODMgODBsNyAxMHoiIGZpbGw9IiNmZmYiIGZpbGwtcnVsZT0iZXZlbm9kZCIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjMiLz48L3N2Zz4=');
+            }
+            .piece.white.queen {
+                background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIj48cGF0aCBkPSJNNTYgMzNsNy42LTkuOCAxMS4xLTUuNS0xMC41IDE4LjhMODAgMjkuOGwtNS45IDEwLjhMNTggNTBjLTIuMjMzIDE0Ljg3OC04LjYxMSAyNy44NDQgMjUgMzBsNyAxMEgxMGw3LTEwYzMzLjYxMS0yLjE1NiAyNy4yMzMtMTUuMTIyIDI1LTMwbC0xNi4xLTkuNEwyMCAyOS44bDE1LjggNi43LTEwLjUtMTguOCAxMS4xIDUuNUw0NCAzM2w2LTIzeiIgZmlsbD0iI2ZmZiIgZmlsbC1ydWxlPSJldmVub2RkIiBzdHJva2U9IiMwMDAiIHN0cm9rZS13aWR0aD0iMyIvPjwvc3ZnPg==');
+            }
+            .piece.white.king {
+                background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIj48cGF0aCBkPSJNMTAgOTBsNy0xMGMyMy4xMzEtMi41MTggMjcuOTEtNy41MjEgMjgtMjNWNDBIMjVWMzBoMjBWMTBoMTB2MjBoMjB2MTBINTV2MTdjLjA5IDE1LjQ3OSA0Ljg2OSAyMC40ODIgMjggMjNsNyAxMHoiIGZpbGw9IiNmZmYiIHN0cm9rZT0iIzAwMCIgc3Ryb2tlLXdpZHRoPSIzIi8+PC9zdmc+');
+            }
+            .piece.white.pawn {
+                background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIj48cGF0aCBkPSJNODMgODBsNyAxMEgxMGw3LTEwYzUxLjgwMy0yMS45MjQtMy42NTItMzEuNDI5IDMzLTU1IDM2LjY1MiAyMy41NzEtMTguODAzIDMzLjA3NiAzMyA1NXoiIGZpbGw9IiNmZmYiIGZpbGwtcnVsZT0iZXZlbm9kZCIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjMiLz48L3N2Zz4=');
+            }
+
+            .piece.black.rook {
+                background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIj48cGF0aCBkPSJNMTAgOTBsNy0xMGMyMS42ODctNC41NiAxOS4zMDctMTUuNDkgOC03MGgxMHY2LjQ4NWwxMCA5VjEwaDEwdjE1LjQ4NWwxMC05VjEwaDEwYy0xMS4zMDcgNTQuNTEtMTMuNjg3IDY1LjQ0IDggNzBsNyAxMHoiIGZpbGw9IiMwMDAiIHN0cm9rZT0iIzAwMCIgc3Ryb2tlLXdpZHRoPSIzIi8+PC9zdmc+');
+            }
+            .piece.black.bishop {
+                background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIj48cGF0aCBkPSJNOTAgOTBsLTctMTBjLTE3LjQ0NS0zLjY2OC0xOS4zMi0xMS4yMi0xMy41LTQyLjUtMS44NS0xLjU0Ny01LjMtNC44LTUuMy00LjgtMy44NjIgNC41NzItOC45MyA3Ljc5Ny0xNC4yIDkuMSA4LjEtMTUuNjUgNC42NDgtMjAuMDU3IDAtMzEuOCAwIDAtNC45MzkgMTcuODAxLTE5LjUgMjcuNUMzNi4zMiA2OC43OCAzNC40NDUgNzYuMzMyIDE3IDgwbC03IDEweiIgZmlsbD0iIzAwMCIgZmlsbC1ydWxlPSJldmVub2RkIiBzdHJva2U9IiMwMDAiIHN0cm9rZS13aWR0aD0iMyIvPjwvc3ZnPg==');
+            }
+            .piece.black.knight {
+                background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIj48cGF0aCBkPSJNMTAgOTBsNy0xMGMzMy41MDItMTYuMjI2IDMzLTQwIDMzLTQwTDI1LjQgNTFsLTIuMy0xMi44QzM0LjEyIDMxLjMyMyA0Mi4yNTggMjIuNDY2IDUwIDEwbDYgOC43IDkgMS45LS4xIDkuMiA0LjYgNy41QzYzLjY4IDY4LjU4IDY1LjU1NSA3Ni4zMzIgODMgODBsNyAxMHoiIGZpbGw9IiMwMDAiIGZpbGwtcnVsZT0iZXZlbm9kZCIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjMiLz48L3N2Zz4=');
+            }
+            .piece.black.queen {
+                background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIj48cGF0aCBkPSJNNTYgMzNsNy42LTkuOCAxMS4xLTUuNS0xMC41IDE4LjhMODAgMjkuOGwtNS45IDEwLjhMNTggNTBjLTIuMjMzIDE0Ljg3OC04LjYxMSAyNy44NDQgMjUgMzBsNyAxMEgxMGw3LTEwYzMzLjYxMS0yLjE1NiAyNy4yMzMtMTUuMTIyIDI1LTMwbC0xNi4xLTkuNEwyMCAyOS44bDE1LjggNi43LTEwLjUtMTguOCAxMS4xIDUuNUw0NCAzM2w2LTIzeiIgZmlsbD0iIzAwMCIgZmlsbC1ydWxlPSJldmVub2RkIiBzdHJva2U9IiMwMDAiIHN0cm9rZS13aWR0aD0iMyIvPjwvc3ZnPg==');
+            }
+            .piece.black.king {
+                background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIj48cGF0aCBkPSJNMTAgOTBsNy0xMGMyMy4xMzEtMi41MTggMjcuOTEtNy41MjEgMjgtMjNWNDBIMjVWMzBoMjBWMTBoMTB2MjBoMjB2MTBINTV2MTdjLjA5IDE1LjQ3OSA0Ljg2OSAyMC40ODIgMjggMjNsNyAxMHoiIGZpbGw9IiMwMDAiIHN0cm9rZT0iIzAwMCIgc3Ryb2tlLXdpZHRoPSIzIi8+PC9zdmc+');
+            }
+            .piece.black.pawn {
+                background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIj48cGF0aCBkPSJNODMgODBsNyAxMEgxMGw3LTEwYzUxLjgwMy0yMS45MjQtMy42NTItMzEuNDI5IDMzLTU1IDM2LjY1MiAyMy41NzEtMTguODAzIDMzLjA3NiAzMyA1NXoiIGZpbGw9IiMwMDAiIGZpbGwtcnVsZT0iZXZlbm9kZCIgc3Ryb2tlPSIjMDAwIiBzdHJva2Utd2lkdGg9IjMiLz48L3N2Zz4=');
+            }
+        </style>
+    </head>
+    <body class='flex-ver'>
+        <div class='flex-hor flex-size-expand'>
+            <table id='board' class='flex-size-static'>
+                <tr>
+                    <td> </td>
+                    <td>a</td>
+                    <td>b</td>
+                    <td>c</td>
+                    <td>d</td>
+                    <td>e</td>
+                    <td>f</td>
+                    <td>g</td>
+                    <td>h</td>
+                    <td> </td>
+                </tr>
+                <tr>
+                    <td>8</td>
+                    <td id='a8'> </td>
+                    <td id='b8'> </td>
+                    <td id='c8'> </td>
+                    <td id='d8'> </td>
+                    <td id='e8'> </td>
+                    <td id='f8'> </td>
+                    <td id='g8'> </td>
+                    <td id='h8'> </td>
+                    <td>8</td>
+                </tr>
+                <tr>
+                    <td>7</td>
+                    <td id='a7'> </td>
+                    <td id='b7'> </td>
+                    <td id='c7'> </td>
+                    <td id='d7'> </td>
+                    <td id='e7'> </td>
+                    <td id='f7'> </td>
+                    <td id='g7'> </td>
+                    <td id='h7'> </td>
+                    <td>7</td>
+                </tr>
+                <tr>
+                    <td>6</td>
+                    <td id='a6'> </td>
+                    <td id='b6'> </td>
+                    <td id='c6'> </td>
+                    <td id='d6'> </td>
+                    <td id='e6'> </td>
+                    <td id='f6'> </td>
+                    <td id='g6'> </td>
+                    <td id='h6'> </td>
+                    <td>6</td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td id='a5'> </td>
+                    <td id='b5'> </td>
+                    <td id='c5'> </td>
+                    <td id='d5'> </td>
+                    <td id='e5'> </td>
+                    <td id='f5'> </td>
+                    <td id='g5'> </td>
+                    <td id='h5'> </td>
+                    <td>5</td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td id='a4'> </td>
+                    <td id='b4'> </td>
+                    <td id='c4'> </td>
+                    <td id='d4'> </td>
+                    <td id='e4'> </td>
+                    <td id='f4'> </td>
+                    <td id='g4'> </td>
+                    <td id='h4'> </td>
+                    <td>4</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td id='a3'> </td>
+                    <td id='b3'> </td>
+                    <td id='c3'> </td>
+                    <td id='d3'> </td>
+                    <td id='e3'> </td>
+                    <td id='f3'> </td>
+                    <td id='g3'> </td>
+                    <td id='h3'> </td>
+                    <td>3</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td id='a2'> </td>
+                    <td id='b2'> </td>
+                    <td id='c2'> </td>
+                    <td id='d2'> </td>
+                    <td id='e2'> </td>
+                    <td id='f2'> </td>
+                    <td id='g2'> </td>
+                    <td id='h2'> </td>
+                    <td>2</td>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td id='a1'> </td>
+                    <td id='b1'> </td>
+                    <td id='c1'> </td>
+                    <td id='d1'> </td>
+                    <td id='e1'> </td>
+                    <td id='f1'> </td>
+                    <td id='g1'> </td>
+                    <td id='h1'> </td>
+                    <td>1</td>
+                </tr>
+                <tr>
+                    <td> </td>
+                    <td>a</td>
+                    <td>b</td>
+                    <td>c</td>
+                    <td>d</td>
+                    <td>e</td>
+                    <td>f</td>
+                    <td>g</td>
+                    <td>h</td>
+                    <td> </td>
+                </tr>
+            </table>
+            <div class='flex-ver'>
+                <button id='btn-switch-mode'
+                    class='flex-size-expand'>Switch to Piece Mode</button>
+                <button id='btn-load-default-layout'
+                    class='flex-size-expand'>Load Default Layout</button>
+                <button id='btn-clear-all'
+                    class='flex-size-expand'>Clear All</button>
+                <button id='btn-clear-selection'
+                    class='flex-size-expand'>Clear Selection</button>
+                <button id='btn-clear-all-pieces'
+                    class='flex-size-expand'>Clear All Pieces</button>
+                <button id='btn-clear-white-pieces'
+                    class='flex-size-expand'>Clear White Pieces</button>
+                <button id='btn-clear-black-pieces'
+                    class='flex-size-expand'>Clear Black Pieces</button>
+            </div>
+            <div class='flex-ver flex-size-expand'>
+                <div>
+                    Color:
+                    <input id='radio-color-white'
+                        type='radio' name='color' value='w'>
+                    <label for='radio-color-white'>White</label>
+
+                    <input id='radio-color-black'
+                        type='radio' name='color' value='b'>
+                    <label for='radio-color-black'>Black</label>
+                </div>
+                <div class='flex-hor flex-size-expand'>
+                    <div class='flex-ver flex-size-expand'>
+                        <div class='flex-size-expand'>
+                            <input class='piece-select-radio' value='P'
+                                type='radio' name='type' id='radio-type-pawn'>
+                            <label class='piece-select-button piece white pawn'
+                                for='radio-type-pawn'></label>
+                        </div>
+
+                        <div class='flex-size-expand'>
+                            <input class='piece-select-radio' value='K'
+                                type='radio' name='type' id='radio-type-king'>
+                            <label class='piece-select-button piece white king'
+                                for='radio-type-king'></label>
+                        </div>
+
+                        <div class='flex-size-expand'>
+                            <input class='piece-select-radio' value='Q'
+                                type='radio' name='type' id='radio-type-queen'>
+                            <label class='piece-select-button piece white queen'
+                                for='radio-type-queen'></label>
+                        </div>
+                    </div>
+                    <div class='flex-ver flex-size-expand'>
+                        <div class='flex-size-expand'>
+                            <input class='piece-select-radio' value='N'
+                                type='radio' name='type' id='radio-type-knight'>
+                            <label class='piece-select-button piece white knight'
+                                for='radio-type-knight'></label>
+                        </div>
+
+                        <div class='flex-size-expand'>
+                            <input class='piece-select-radio' value='B'
+                                type='radio' name='type' id='radio-type-bishop'>
+                            <label class='piece-select-button piece white bishop'
+                                for='radio-type-bishop'></label>
+                        </div>
+
+                        <div class='flex-size-expand'>
+                            <input class='piece-select-radio' value='R'
+                                type='radio' name='type' id='radio-type-rook'>
+                            <label class='piece-select-button piece white rook'
+                                for='radio-type-rook'></label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class='flex-hor flex-size-expand'>
+            <textarea readonly id='selection-text'
+                class='flex-size-expand'></textarea>
+            <textarea readonly id='pieces-text'
+                class='flex-size-expand'></textarea>
+        </div>
+        <script>
+            const $id = document.getElementById.bind(document);
+
+            const pieces = new Map();
+            const selection = new Set();
+            let activeMode;
+            toggleMode();
+
+
+            // reset forms
+            $id('radio-color-white').checked = true;
+            $id('radio-type-pawn').checked = true;
+            updatePiecesUI();
+            updateSelectionUI();
+            updateModesUI();
+
+            // setup event listeners
+
+            // clear buttons
+            $id('btn-switch-mode').addEventListener('click', () => {
+                toggleMode();
+            })
+            $id('btn-load-default-layout').addEventListener('click', () => {
+                loadDefaultLayout();
+            })
+            $id('btn-clear-all').addEventListener('click', () => {
+                clearSelection();
+                clearWhitePieces();
+                clearBlackPieces();
+            })
+            $id('btn-clear-selection').addEventListener('click', () => {
+                clearSelection();
+            })
+            $id('btn-clear-all-pieces').addEventListener('click', () => {
+                clearWhitePieces();
+                clearBlackPieces();
+            })
+            $id('btn-clear-white-pieces').addEventListener('click', () => {
+                clearWhitePieces();
+            })
+            $id('btn-clear-black-pieces').addEventListener('click', () => {
+                clearBlackPieces();
+            })
+
+            // board
+            const board = $id('board');
+            board.addEventListener('mousedown', function (e) {
+                const [LEFT, MIDDLE, RIGHT] = [1, 2, 3];
+                const square = e.target.id;
+                if (square) {
+                    // other mode if ctrl key is held
+                    // active mode otherwise
+                    let modeToUse = e.ctrlKey ? getOtherMode() : getActiveMode();
+
+                    if (modeToUse === 'Piece') {
+                        if (e.which === LEFT) {
+                            togglePiece(square);
+                        } else if (e.which === MIDDLE) {
+                            toggleColor(square);
+                        } else if (e.which === RIGHT) {
+                            removePiece(square);
+                        }
+                    } else {
+                        if (e.which === LEFT) {
+                            toggleSelection(square);
+                        } else if (e.which === RIGHT) {
+                            removeSelection(square);
+                        }
+                    }
+                }
+                e.preventDefault();
+                return false;
+            })
+            board.addEventListener('contextmenu', function (e) {
+                // block right click menu
+                e.preventDefault();
+                return false;
+            });
+
+            // clicking on text boxes should copy their contents
+            function clickToCopy(evt) {
+                evt.target.select();
+                document.execCommand('copy');
+            }
+            $id('pieces-text').addEventListener('click', clickToCopy);
+            $id('selection-text').addEventListener('click', clickToCopy);
+
+            // changing the active color also changes all the button piece colors
+            function updateButtonColors(evt) {
+                const buttons
+                    = document.getElementsByClassName('piece-select-button');
+
+                const activeColor =
+                    document.querySelector('[name=color]:checked').value;
+                if (activeColor === 'b') {
+                    toAdd = 'black';
+                    toRemove = 'white';
+                } else {
+                    toAdd = 'white';
+                    toRemove = 'black';
+                }
+                for (let button of buttons) {
+                    button.classList.add(toAdd);
+                    button.classList.remove(toRemove);
+                }
+            }
+            $id('radio-color-white').addEventListener('click', updateButtonColors);
+            $id('radio-color-black').addEventListener('click', updateButtonColors);
+
+
+            /*******************************************************************
+             * selection functions
+             */
+            function toggleSelection(square) {
+                if (selection.has(square)) {
+                    selection.delete(square);
+                } else {
+                    selection.add(square);
+                }
+                updateSelectionUI(square);
+            }
+            function removeSelection(square) {
+                selection.delete(square);
+                updateSelectionUI(square);
+            }
+
+            function clearSelection() {
+                selection.clear();
+                updateSelectionUI();
+            }
+
+            function updateSelectionUI(square) {
+                function updateSquare(square) {
+                    $id(square).dataset['selected'] = selection.has(square);
+                }
+
+                // update board
+                if (square) {
+                    // update given square
+                    updateSquare(square);
+                } else {
+                    // update all squares
+                    for (let e of document.getElementsByTagName('td')) {
+                        if (e.id) {
+                            updateSquare(e.id);
+                        }
+                    }
+                }
+
+                // update text box
+                $id('selection-text').value
+                    = Array.from(selection).sort().join(' ');
+            }
+
+
+            /*******************************************************************
+             * pieces functions
+             */
+            function getActivePiece() {
+                const activeType =
+                    document.querySelector('[name=type]:checked').value;
+                const activeColor =
+                    document.querySelector('[name=color]:checked').value;
+                return {
+                    type: activeType,
+                    color: activeColor,
+                }
+            }
+
+            function toggleColor(square) {
+                const currPiece = pieces.get(square);
+                if (currPiece) {
+                    currPiece.color = currPiece.color === 'w' ? 'b' : 'w';
+
+                    updatePiecesUI(square);
+                } else {
+                    // if there isn't a piece there, add a piece of the opposite
+                    // color
+                    togglePiece(square);
+                    toggleColor(square);
+                }
+            }
+
+            function togglePiece(square) {
+                const currPiece = pieces.get(square) || {};
+                const activePiece = getActivePiece();
+
+                if (currPiece.type === activePiece.type
+                        && currPiece.color === activePiece.color) {
+                    // if the current piece is the same as the one to be set
+                    // remove the piece instead
+                    removePiece(square);
+                } else {
+                    pieces.set(square, activePiece);
+                }
+
+                updatePiecesUI(square);
+            }
+
+            function removePiece(square) {
+                pieces.delete(square);
+
+                updatePiecesUI(square);
+            }
+
+            function clearWhitePieces() {
+                clearPiecesMatching((piece) => piece.color === 'w');
+            }
+
+            function clearBlackPieces() {
+                clearPiecesMatching((piece) => piece.color === 'b');
+            }
+
+            function clearPiecesMatching(predicate) {
+                for (let [square, piece] of pieces) {
+                    if (predicate(piece)) {
+                        pieces.delete(square);
+                    }
+                }
+
+                updatePiecesUI();
+            }
+
+            function updatePiecesUI(square) {
+                function updateSquare(square) {
+                    const piece = pieces.get(square, null);
+                    const e = $id(square);
+
+                    e.classList.remove('white');
+                    e.classList.remove('black');
+
+                    e.classList.remove('pawn');
+                    e.classList.remove('knight');
+                    e.classList.remove('bishop');
+                    e.classList.remove('rook');
+                    e.classList.remove('queen');
+                    e.classList.remove('king');
+
+                    if (piece) {
+                        switch (piece.color) {
+                            case 'w': e.classList.add('white'); break;
+                            case 'b': e.classList.add('black'); break;
+                        }
+                        switch (piece.type) {
+                            case 'P': e.classList.add('pawn'); break;
+                            case 'N': e.classList.add('knight'); break;
+                            case 'B': e.classList.add('bishop'); break;
+                            case 'R': e.classList.add('rook'); break;
+                            case 'Q': e.classList.add('queen'); break;
+                            case 'K': e.classList.add('king'); break;
+                        }
+                        e.classList.add('piece');
+                    }
+                }
+
+                // update board
+                if (square) {
+                    // update given square
+                    updateSquare(square);
+                } else {
+                    // update all squares
+                    for (let e of document.getElementsByTagName('td')) {
+                        if (e.id) {
+                            updateSquare(e.id);
+                        }
+                    }
+                }
+
+                // update text box
+                const board = [];
+                for (let r of '87654321'.split('')) {
+                    const rank = [];
+                    for (let f of 'abcdefgh'.split('')) {
+                        const square = f + r;
+                        const piece = pieces.get(square);
+                        const code = piece
+                            ? piece.color + piece.type.replace('P', '')
+                            : '';
+                        rank.push(`'${code}'`);
+                    }
+                    board.push(rank);
+                }
+                $id('pieces-text').value = '[\n' + board
+                    .map(function (rank) {
+                        return `[${rank.join(', ')}]`;
+                    })
+                    .join(',\n')
+                + '\n]';
+            }
+
+            function loadDefaultLayout() {
+                pieces.clear();
+
+                const files = 'abcdefgh'.split('');
+                const backrow = 'RNBQKBNR'.split('');
+                for (let i = 0; i < 8; i++) {
+                    let f = files[i];
+                    let p = backrow[i];
+                    pieces.set(f + '8', {color: 'b', type: p,});
+                    pieces.set(f + '7', {color: 'b', type: 'P',});
+                    pieces.set(f + '2', {color: 'w', type: 'P',});
+                    pieces.set(f + '1', {color: 'w', type: p,});
+                }
+
+                updatePiecesUI();
+            }
+
+            /*******************************************************************
+             * mode functions
+             */
+            function getActiveMode() {
+                return activeMode;
+            }
+            function getOtherMode() {
+                return activeMode === 'Select'
+                    ? 'Piece'
+                    : 'Select';
+            }
+            function toggleMode() {
+                activeMode = getOtherMode();
+                updateModesUI();
+            }
+            function updateModesUI() {
+                $id('btn-switch-mode')
+                    .innerHTML = `Switch to ${getOtherMode()} Mode`;
+            }
+        </script>
+    </body>
+</html>
