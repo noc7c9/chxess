@@ -1,33 +1,32 @@
 import test from 'ava'
-import {moveGenerationTest} from './_helpers'
-import {Chxess} from '../build/chxess'
+import {moveGenerationMacro} from './_helpers'
 
-
-test('pawn move from middle of an empty board', t => {
-    const chx = new Chxess()
-
-    // white
-    chx.clearBoard()
-    chx.setSquare('d4', 'w')
-    moveGenerationTest(t, chx, 'd4', 'd5')
-
-    // black
-    chx.clearBoard()
-    chx.setSquare('d4', 'b')
-    moveGenerationTest(t, chx, 'd4', 'd3')
+test('white pawn moves from middle of an empty board',
+    moveGenerationMacro, {
+        board: ['wd4'],
+        square: 'd4',
+        expected: 'd5',
 })
 
+test('black pawn moves from middle of an empty board',
+    moveGenerationMacro, {
+        board: ['bd4'],
+        turn: 'b',
+        square: 'd4',
+        expected: 'd3',
+})
 
-test('pawn move from starting rank of an empty board', t => {
-    const chx = new Chxess()
+test('white pawn move from starting rank of an empty board',
+    moveGenerationMacro, {
+        board: ['wd2'],
+        square: 'd2',
+        expected: 'd3 d4',
+})
 
-    // white
-    chx.clearBoard()
-    chx.setSquare('d2', 'w')
-    moveGenerationTest(t, chx, 'd2', 'd3 d4')
-
-    // white
-    chx.clearBoard()
-    chx.setSquare('d7', 'b')
-    moveGenerationTest(t, chx, 'd7', 'd5 d6')
+test('black pawn move from starting rank of an empty board',
+    moveGenerationMacro, {
+        board: ['bd7'],
+        turn: 'b',
+        square: 'd7',
+        expected: 'd5 d6',
 })
