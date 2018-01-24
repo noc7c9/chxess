@@ -39,6 +39,25 @@ test('setting the board', t => {
     t.deepEqual(layout, chx.getBoard())
 })
 
+test('setting the board via constructor', t => {
+    const layout = [
+        ['',   '',   'b',  '',   'b',  'wQ', 'bQ', '',   ],
+        ['',   'b',  '',   'wR', '',   '',   'b',  '',   ],
+        ['wB', 'bK', '',   'b',  '',   '',   'w',  'bR', ],
+        ['w',  'wN', 'b',  'bB', 'w',  '',   'b',  '',   ],
+        ['',   '',   '',   'wN', 'wR', 'wB', 'b',  '',   ],
+        ['',   'bB', 'wK', '',   'w',  '',   '',   '',   ],
+        ['',   '',   'w',  '',   '',   '',   'w',  '',   ],
+        ['w',  '',   '',   'bR', 'bN', 'w',  'bN', '',   ],
+    ]
+
+    // set the board using the constructor
+    const chx = new Chxess(layout);
+
+    // make sure the board layout was actually set
+    t.deepEqual(layout, chx.getBoard())
+})
+
 test('clearing the board', t => {
     const chx = new Chxess()
 

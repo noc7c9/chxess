@@ -135,7 +135,7 @@ class Chxess {
     var board:HashMap<Coord, Piece>;
     var isWhitesTurn = true;
 
-    public function new() {
+    public function new(?initialLayout) {
         board = new HashMap();
 
         // setup board
@@ -164,6 +164,10 @@ class Chxess {
                 new Piece(PieceColor.White, PieceType.Pawn));
             board.set(new Coord(Rank.R7, file),
                 new Piece(PieceColor.Black, PieceType.Pawn));
+        }
+
+        if (initialLayout != null) {
+            setBoard(initialLayout);
         }
     }
 
