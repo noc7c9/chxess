@@ -35,3 +35,20 @@ test('bishop moves from the top right corner of an empty board',
         square: 'h8',
         expected: 'Ba1 Bb2 Bc3 Bd4 Be5 Bf6 Bg7',
 })
+
+
+test('white bishop has no moves on black\'s turn',
+    moveGenerationMacro, {
+        board: ['wBd4'],
+        turn: 'b',
+        square: 'd4',
+        expected: '',
+})
+
+test('black bishop has no moves on white\'s turn',
+    moveGenerationMacro, {
+        board: ['bBd4'],
+        turn: 'w',
+        square: 'd4',
+        expected: '',
+})

@@ -35,3 +35,20 @@ test('rook moves from the top right corner of an empty board',
         square: 'h8',
         expected: 'Ra8 Rb8 Rc8 Rd8 Re8 Rf8 Rg8 Rh1 Rh2 Rh3 Rh4 Rh5 Rh6 Rh7',
 })
+
+
+test('white rook has no moves on black\'s turn',
+    moveGenerationMacro, {
+        board: ['wRd4'],
+        turn: 'b',
+        square: 'd4',
+        expected: '',
+})
+
+test('black rook has no moves on white\'s turn',
+    moveGenerationMacro, {
+        board: ['bRd4'],
+        turn: 'w',
+        square: 'd4',
+        expected: '',
+})

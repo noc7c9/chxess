@@ -5,6 +5,10 @@ export function moveGenerationMacro(t, settings) {
     function createBoardFromSettings(board, turn) {
         const chx = new Chxess()
 
+        if (turn) {
+            chx.setTurn(turn);
+        }
+
         if (Array.isArray(board) && Array.isArray(board[0])) {
             // is it an entire board layout?
             chx.setBoard(board)

@@ -35,3 +35,20 @@ test('knight moves from the top right corner of an empty board',
         square: 'h8',
         expected: 'Nf7 Ng6',
 })
+
+
+test('white knight has no moves on black\'s turn',
+    moveGenerationMacro, {
+        board: ['wNd4'],
+        turn: 'b',
+        square: 'd4',
+        expected: '',
+})
+
+test('black knight has no moves on white\'s turn',
+    moveGenerationMacro, {
+        board: ['bNd4'],
+        turn: 'w',
+        square: 'd4',
+        expected: '',
+})

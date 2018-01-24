@@ -30,3 +30,20 @@ test('black pawn move from starting rank of an empty board',
         square: 'd7',
         expected: 'd5 d6',
 })
+
+
+test('white pawn has no moves on black\'s turn',
+    moveGenerationMacro, {
+        board: ['wd4'],
+        turn: 'b',
+        square: 'd4',
+        expected: '',
+})
+
+test('black pawn has no moves on white\'s turn',
+    moveGenerationMacro, {
+        board: ['bd4'],
+        turn: 'w',
+        square: 'd4',
+        expected: '',
+})

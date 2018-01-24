@@ -252,6 +252,13 @@ class Chxess {
             return [];
         } else {
             var moveCoords;
+
+            // only calculate moves if the piece of the current turn color
+            if (isWhitesTurn && piece.color == PieceColor.Black
+                    || !isWhitesTurn && piece.color == PieceColor.White) {
+                return [];
+            }
+
             switch (piece.type) {
                 case Rook:
                     moveCoords = getRookMoveCoords(coord);
