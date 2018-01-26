@@ -4,8 +4,8 @@
   "description": "Implementation of chess in Haxe.",
   "scripts": {
     "build": "haxe build.hxml",
-    "test": "haxe build.hxml && ava",
-    "test:watch": "concurrently --raw \"nodemon --quiet --exec \\\"haxe build.hxml\\\" --ext hx --watch src\" \"ava --watch\""
+    "test": "haxe build.hxml -debug && ava",
+    "test:watch": "concurrently --raw \"nodemon --quiet --exec \\\"haxe build.hxml -debug\\\" --ext hx --watch src\" \"ava --watch\""
   },
   "author": "Athir Saleem <noc7c9@gmail.com>",
   "license": "MIT",
