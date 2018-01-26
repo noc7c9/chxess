@@ -3,126 +3,8 @@ package chxess;
 import haxe.ds.HashMap;
 using haxe.EnumTools.EnumValueTools;
 
-
-/***
- * Coord
- */
-
-enum Rank {
-    R1; R2; R3; R4; R5; R6; R7; R8;
-}
-
-enum File {
-    A; B; C; D; E; F; G; H;
-}
-
-class Coord {
-    public var rank(default, null):Rank;
-    public var file(default, null):File;
-
-    public static function fromString(coord) {
-        var file = switch (coord.charAt(0).toUpperCase()) {
-            case 'A': File.A;
-            case 'B': File.B;
-            case 'C': File.C;
-            case 'D': File.D;
-            case 'E': File.E;
-            case 'F': File.F;
-            case 'G': File.G;
-            case 'H': File.H;
-            case _: throw 'Error: Invalid coord file: ' + coord.charAt(0);
-        };
-        var rank = switch (coord.charAt(1).toUpperCase()) {
-            case '1': Rank.R1;
-            case '2': Rank.R2;
-            case '3': Rank.R3;
-            case '4': Rank.R4;
-            case '5': Rank.R5;
-            case '6': Rank.R6;
-            case '7': Rank.R7;
-            case '8': Rank.R8;
-            case _: throw 'Error: Invalid coord rank: ' + coord.charAt(1);
-        };
-        return new Coord(rank, file);
-    }
-
-    public function new(rank, file) {
-        this.rank = rank;
-        this.file = file;
-    }
-
-    public function hashCode() {
-        return rank.getIndex() + 8 * file.getIndex();
-    }
-
-    public function toString() {
-        var fileString = file.getName().toLowerCase();
-        var rankString = rank.getName().charAt(1);
-        return fileString + rankString;
-    }
-
-}
-
-
-/***
- * Piece
- */
-
-enum PieceColor {
-    White; Black;
-}
-
-enum PieceType {
-    Pawn; Knight; Bishop; Rook; Queen; King;
-}
-
-class Piece {
-    public var color(default, null):PieceColor;
-    public var type(default, null):PieceType;
-
-    public static function fromString(piece) {
-        var color = switch (piece.charAt(0).toUpperCase()) {
-            case 'W': PieceColor.White;
-            case 'B': PieceColor.Black;
-            case _: throw 'Error: Invalid piece color: ' + piece.charAt(0);
-        };
-        var type = switch (piece.charAt(1).toUpperCase()) {
-            case '': PieceType.Pawn;
-            case 'N': PieceType.Knight;
-            case 'B': PieceType.Bishop;
-            case 'R': PieceType.Rook;
-            case 'Q': PieceType.Queen;
-            case 'K': PieceType.King;
-            case _: throw 'Error: Invalid piece type: ' + piece.charAt(1);
-        };
-        return new Piece(color, type);
-    }
-
-    public function new(color, type) {
-        this.color = color;
-        this.type = type;
-    }
-
-    public function toString() {
-        var colorString = switch (color) {
-            case White: 'w';
-            case Black: 'b';
-        }
-        return colorString + getPieceString();
-    }
-
-    public function getPieceString() {
-        return switch (type) {
-            case Pawn: '';
-            case Knight: 'N';
-            case Bishop: 'B';
-            case Rook: 'R';
-            case Queen: 'Q';
-            case King: 'K';
-        }
-    }
-
-}
+import chxess.Coord;
+import chxess.Piece;
 
 
 /***
@@ -133,14 +15,14 @@ class Piece {
 class Chxess {
 
     var board:HashMap<Coord, Piece>;
-    var turn:PieceColor = White;
+    var turn:Color = White;
 
     public function new(?initialLayout) {
         board = new HashMap();
 
         // setup board
 
-        var backrowSetup = [
+        var backrowSetup:Map<File, Type> = [
             A => Rook,
             B => Knight,
             C => Bishop,
@@ -154,16 +36,16 @@ class Chxess {
         for (file in File.createAll()) {
             // back rows
             var piece = backrowSetup[file];
-            board.set(new Coord(Rank.R1, file),
-                new Piece(PieceColor.White, piece));
-            board.set(new Coord(Rank.R8, file),
-                new Piece(PieceColor.Black, piece));
+            board.set(new Coord(R1, file),
+                new Piece(White, piece));
+            board.set(new Coord(R8, file),
+                new Piece(Black, piece));
 
             // pawns
-            board.set(new Coord(Rank.R2, file),
-                new Piece(PieceColor.White, PieceType.Pawn));
-            board.set(new Coord(Rank.R7, file),
-                new Piece(PieceColor.Black, PieceType.Pawn));
+            board.set(new Coord(R2, file),
+                new Piece(White, Pawn));
+            board.set(new Coord(R7, file),
+                new Piece(Black, Pawn));
         }
 
         if (initialLayout != null) {
@@ -313,15 +195,15 @@ class Chxess {
         ]);
     }
 
-    function getPawnMoveCoords(startCoord, color) {
+    function getPawnMoveCoords(startCoord, color:Color) {
         var moves = [];
         var rankDir = switch (color) {
             case White: 1;
             case Black: -1;
         };
-        var homeRow = switch (color) {
-            case White: Rank.R2;
-            case Black: Rank.R7;
+        var homeRow:Rank = switch (color) {
+            case White: R2;
+            case Black: R7;
         };
 
         // single pawn push
