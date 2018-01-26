@@ -133,7 +133,7 @@ class Piece {
 class Chxess {
 
     var board:HashMap<Coord, Piece>;
-    var isWhitesTurn = true;
+    var turn:PieceColor = White;
 
     public function new(?initialLayout) {
         board = new HashMap();
@@ -172,21 +172,21 @@ class Chxess {
     }
 
     public function getTurn() {
-        if (isWhitesTurn) {
+        if (turn == White) {
             return 'w';
         } else {
             return 'b';
         }
     }
 
-    public function setTurn(turn) {
-        switch (turn) {
+    public function setTurn(newTurn) {
+        switch (newTurn) {
             case 'w':
-                isWhitesTurn = true;
+                turn = White;
             case 'b':
-                isWhitesTurn = false;
+                turn = Black;
             default:
-                throw 'Error: Invalid turn value: ' + turn;
+                throw 'Error: Invalid turn value: ' + newTurn;
         }
     }
 
@@ -254,8 +254,7 @@ class Chxess {
             var moveCoords;
 
             // only calculate moves if the piece of the current turn color
-            if (isWhitesTurn && piece.color == PieceColor.Black
-                    || !isWhitesTurn && piece.color == PieceColor.White) {
+            if (turn != piece.color) {
                 return [];
             }
 
@@ -326,15 +325,20 @@ class Chxess {
         };
 
         // single pawn push
-        var coord = getOffsetCoord(startCoord, rankDir, 0);
-        if (coord != null) {
+        var coord = getCoordOffsetBy(startCoord, rankDir, 0);
+        var piece = coord != null ? board.get(coord) : null;
+        if (coord != null && piece == null) {
             moves.push(coord);
+        }
+        if (piece != null) {
+            return moves;
         }
 
         // double pawn push
         if (startCoord.rank == homeRow) {
-            var coord = getOffsetCoord(startCoord, rankDir * 2, 0);
-            if (coord != null) {
+            var coord = getCoordOffsetBy(startCoord, rankDir * 2, 0);
+            var piece = coord != null ? board.get(coord) : null;
+            if (coord != null && piece == null) {
                 moves.push(coord);
             }
         }
@@ -345,7 +349,7 @@ class Chxess {
     function getRiderMoveCoords(startCoord, dirs:Array<Array<Int>>) {
         var moves = [];
         for (dir in dirs) {
-            for (coord in getAllCoordsInDir(startCoord, dir[0], dir[1])) {
+            for (coord in getAllMoveCoordsInDir(startCoord, dir[0], dir[1])) {
                 moves.push(coord);
             }
         }
@@ -355,26 +359,33 @@ class Chxess {
     function getLeaperMoveCoords(startCoord, offsets:Array<Array<Int>>) {
         var moves = [];
         for (offset in offsets) {
-            var coord = getOffsetCoord(startCoord, offset[0], offset[1]);
-            if (coord != null) {
+            var coord = getCoordOffsetBy(startCoord, offset[0], offset[1]);
+            var piece = coord != null ? board.get(coord) : null;
+            if (coord != null && piece == null) {
                 moves.push(coord);
             }
         }
         return moves;
     }
 
-    function getAllCoordsInDir(coord, rankDir, fileDir) {
+    function getAllMoveCoordsInDir(coord, rankDir, fileDir) {
         var moves = [];
-        while (coord != null) {
-            coord = getOffsetCoord(coord, rankDir, fileDir);
-            if (coord != null) {
+        var isOnBoard = true;
+        var isEmpty = true;
+        while (isOnBoard && isEmpty) {
+            coord = getCoordOffsetBy(coord, rankDir, fileDir);
+            isOnBoard = coord != null;
+            var piece = isOnBoard ? board.get(coord) : null;
+            isEmpty = piece == null;
+
+            if (isOnBoard && isEmpty) {
                 moves.push(coord);
             }
         }
         return moves;
     }
 
-    function getOffsetCoord(startCoord:Coord, rankOffset, fileOffset) {
+    function getCoordOffsetBy(startCoord:Coord, rankOffset, fileOffset) {
         var rankIndex = startCoord.rank.getIndex();
         var fileIndex = startCoord.file.getIndex();
 

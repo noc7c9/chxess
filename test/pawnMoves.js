@@ -47,3 +47,24 @@ test('black pawn has no moves on white\'s turn',
         square: 'd4',
         expected: '',
 })
+
+test('pawn single push is blocked by friendly pieces',
+    moveGenerationMacro, {
+        board: ['wd5', 'wd4'],
+        square: 'd4',
+        expected: '',
+})
+
+test('pawn double push is blocked by friendly pieces on target square',
+    moveGenerationMacro, {
+        board: ['wc4', 'wc2'],
+        square: 'c2',
+        expected: 'c3',
+})
+
+test('pawn double push is blocked by friendly pieces on square in front',
+    moveGenerationMacro, {
+        board: ['wc3', 'wc2'],
+        square: 'c2',
+        expected: '',
+})

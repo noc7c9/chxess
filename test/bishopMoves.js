@@ -52,3 +52,10 @@ test('black bishop has no moves on white\'s turn',
         square: 'd4',
         expected: '',
 })
+
+test('bishop is blocked by friendly pieces',
+    moveGenerationMacro, {
+        board: ['wh8', 'wb6', 'wBd4', 'we3', 'wa1'],
+        square: 'd4',
+        expected: 'Bb2 Bc3 Bc5 Be5 Bf6 Bg7',
+})

@@ -24,3 +24,10 @@ test('black king has no moves on white\'s turn',
         square: 'd4',
         expected: '',
 })
+
+test('king is blocked by friendly pieces',
+    moveGenerationMacro, {
+        board: ['wc5', 'we5', 'wKd4', 'we4', 'wd3'],
+        square: 'd4',
+        expected: 'Kc3 Kc4 Kd5 Ke3',
+})

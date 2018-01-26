@@ -52,3 +52,10 @@ test('black rook has no moves on white\'s turn',
         square: 'd4',
         expected: '',
 })
+
+test('rook is blocked by friendly pieces',
+    moveGenerationMacro, {
+        board: ['wd7', 'wb4', 'wRd4', 'wh4', 'wd3'],
+        square: 'd4',
+        expected: 'Rc4 Rd5 Rd6 Re4 Rf4 Rg4',
+})
