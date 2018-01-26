@@ -408,14 +408,6 @@
                 return false;
             });
 
-            // clicking on text boxes should copy their contents
-            function clickToCopy(evt) {
-                evt.target.select();
-                document.execCommand('copy');
-            }
-            $id('pieces-text').addEventListener('click', clickToCopy);
-            $id('selection-text').addEventListener('click', clickToCopy);
-
             // changing the active color also changes all the button piece colors
             function updateButtonColors(evt) {
                 const buttons
@@ -598,6 +590,7 @@
                 }
 
                 // update text box
+                // full board export
                 const board = [];
                 for (let r of '87654321'.split('')) {
                     const rank = [];
@@ -611,12 +604,31 @@
                     }
                     board.push(rank);
                 }
-                $id('pieces-text').value = '[\n' + board
+                const fullBoardExport = '[\n' + board
                     .map(function (rank) {
                         return `[${rank.join(', ')}]`;
                     })
                     .join(',\n')
                 + '\n]';
+
+                // minimal board export
+                const codes = [];
+                for (let r of '87654321'.split('')) {
+                    for (let f of 'abcdefgh'.split('')) {
+                        const square = f + r;
+                        const piece = pieces.get(square);
+                        if (piece) {
+                            codes.push(piece.color
+                                + piece.type.replace('P', '')
+                                + square);
+                        }
+                    }
+                }
+                const minimalBoardExport
+                    = `[${codes.sort().map((v) => `'${v}'`).join(', ')}]`;
+
+                $id('pieces-text').value = fullBoardExport
+                    + '\n\n' + minimalBoardExport;
             }
 
             function loadDefaultLayout() {
