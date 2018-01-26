@@ -156,7 +156,8 @@ class Chxess {
                 default:
                     moveCoords = [];
             }
-            return moveCoordsToStrings(moveCoords, piece.getPieceString());
+            return moveCoordsToStrings(moveCoords,
+                Piece.typeToString(piece.type));
         }
     }
 
