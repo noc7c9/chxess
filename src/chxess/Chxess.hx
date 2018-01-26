@@ -326,19 +326,20 @@ class Chxess {
 
         // single pawn push
         var coord = getCoordOffsetBy(startCoord, rankDir, 0);
-        var piece = coord != null ? board.get(coord) : null;
-        if (coord != null && piece == null) {
+        var coordInfo = getCoordInfo(coord);
+        if (coordInfo.isEmpty) {
             moves.push(coord);
-        }
-        if (piece != null) {
+        } else {
+            // if the single push is blocked, the double push is as well
+            // so stop here
             return moves;
         }
 
         // double pawn push
         if (startCoord.rank == homeRow) {
             var coord = getCoordOffsetBy(startCoord, rankDir * 2, 0);
-            var piece = coord != null ? board.get(coord) : null;
-            if (coord != null && piece == null) {
+            var coordInfo = getCoordInfo(coord);
+            if (coordInfo.isEmpty) {
                 moves.push(coord);
             }
         }
@@ -360,8 +361,8 @@ class Chxess {
         var moves = [];
         for (offset in offsets) {
             var coord = getCoordOffsetBy(startCoord, offset[0], offset[1]);
-            var piece = coord != null ? board.get(coord) : null;
-            if (coord != null && piece == null) {
+            var coordInfo = getCoordInfo(coord);
+            if (coordInfo.isEmpty) {
                 moves.push(coord);
             }
         }
@@ -370,19 +371,33 @@ class Chxess {
 
     function getAllMoveCoordsInDir(coord, rankDir, fileDir) {
         var moves = [];
-        var isOnBoard = true;
-        var isEmpty = true;
-        while (isOnBoard && isEmpty) {
-            coord = getCoordOffsetBy(coord, rankDir, fileDir);
-            isOnBoard = coord != null;
-            var piece = isOnBoard ? board.get(coord) : null;
-            isEmpty = piece == null;
 
-            if (isOnBoard && isEmpty) {
+        var coordInfo;
+        do {
+            coord = getCoordOffsetBy(coord, rankDir, fileDir);
+            coordInfo = getCoordInfo(coord);
+            if (coordInfo.isEmpty) {
                 moves.push(coord);
             }
-        }
+        } while (coordInfo.isEmpty);
+
         return moves;
+    }
+
+    function getCoordInfo(coord) {
+        var info = {
+            isEmpty: false, // note: true implies isOnBoard is true
+            isFriendly: false, // note: true implies isEmpty is false
+        };
+
+        if (coord == null) { // stop if the coord is invalid
+            return info;
+        } else {
+            var piece = board.get(coord);
+            info.isEmpty = piece == null;
+            info.isFriendly = !info.isEmpty && piece.color == turn;
+            return info;
+        }
     }
 
     function getCoordOffsetBy(startCoord:Coord, rankOffset, fileOffset) {
