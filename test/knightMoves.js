@@ -59,3 +59,10 @@ test('knight is blocked by friendly pieces',
         square: 'd4',
         expected: 'Nb5 Nc2 Nf3 Nf5',
 })
+
+test('knight capturing moves',
+    moveGenerationMacro, {
+        board: ['bb3', 'bc6', 'be2', 'bf3', 'bf5', 'wNd4'],
+        square: 'd4',
+        expected: 'Nb5 Nc2 Ne6 Nxb3 Nxc6 Nxe2 Nxf3 Nxf5',
+})

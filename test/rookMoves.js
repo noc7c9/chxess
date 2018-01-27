@@ -59,3 +59,10 @@ test('rook is blocked by friendly pieces',
         square: 'd4',
         expected: 'Rc4 Rd5 Rd6 Re4 Rf4 Rg4',
 })
+
+test('rook capturing moves',
+    moveGenerationMacro, {
+        board: ['bc4', 'bd2', 'bd7', 'bh4', 'wRd4'],
+        square: 'd4',
+        expected: 'Rd3 Rd5 Rd6 Re4 Rf4 Rg4 Rxc4 Rxd2 Rxd7 Rxh4',
+})

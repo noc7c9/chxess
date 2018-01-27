@@ -31,3 +31,10 @@ test('king is blocked by friendly pieces',
         square: 'd4',
         expected: 'Kc3 Kc4 Kd5 Ke3',
 })
+
+test('king capturing moves',
+    moveGenerationMacro, {
+        board: ['bc3', 'bd5', 'be5', 'wKd4'],
+        square: 'd4',
+        expected: 'Kc4 Kc5 Kd3 Ke3 Ke4 Kxc3 Kxd5 Kxe5',
+})

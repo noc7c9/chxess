@@ -18,7 +18,13 @@ class Move {
     }
 
     public function toString() {
-        return Piece.typeToString(piece.type) + end.toString();
+        var pieceStr = Piece.typeToString(piece.type);
+        var endStr = end.toString();
+        if (this.capture != null) {
+            return '${pieceStr}x${endStr}';
+        } else {
+            return pieceStr + endStr;
+        }
     }
 
 }

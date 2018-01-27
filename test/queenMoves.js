@@ -34,3 +34,13 @@ test('queen is blocked by friendly pieces',
         square: 'd4',
         expected: 'Qb2 Qb6 Qc3 Qc5 Qd3 Qd5 Qd6 Qd7 Qe3 Qe4 Qf4',
 })
+
+test('queen capturing moves',
+    moveGenerationMacro, {
+        board: ['bb2', 'bb4', 'bb6', 'bd3', 'bd7', 'bg1', 'bh4', 'bh8', 'wQd4'],
+        square: 'd4',
+        expected: [
+            'Qc3 Qc4 Qc5 Qd5 Qd6 Qe3 Qe4 Qe5 Qf2 Qf4 Qf6 Qg4 Qg7',
+            'Qxb2 Qxb4 Qxb6 Qxd3 Qxd7 Qxg1 Qxh4 Qxh8',
+        ]
+})

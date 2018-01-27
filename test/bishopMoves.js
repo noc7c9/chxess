@@ -59,3 +59,10 @@ test('bishop is blocked by friendly pieces',
         square: 'd4',
         expected: 'Bb2 Bc3 Bc5 Be5 Bf6 Bg7',
 })
+
+test('bishop capturing moves',
+    moveGenerationMacro, {
+        board: ['ba7', 'bb2', 'be3', 'bh8', 'wBd4'],
+        square: 'd4',
+        expected: 'Bb6 Bc3 Bc5 Be5 Bf6 Bg7 Bxa7 Bxb2 Bxe3 Bxh8',
+})

@@ -239,8 +239,13 @@ class Chxess {
             do {
                 coord = getCoordOffsetBy(coord, dir);
                 coordInfo = getCoordInfo(coord);
-                if (coordInfo.isEmpty) {
-                    moves.push(createMove(startCoord, coord));
+                if (coordInfo.isEmpty
+                        || (coordInfo.isOnBoard && !coordInfo.isFriendly)) {
+                    var move = new Move(
+                        board.get(startCoord),
+                        startCoord, coord,
+                        board.get(coord));
+                    moves.push(move);
                 }
                 dist += 1;
             } while (coordInfo.isEmpty && dist < maxDist);
@@ -249,14 +254,9 @@ class Chxess {
         return moves;
     }
 
-    function createMove(start, end) {
-        var piece = board.get(start);
-
-        return new Move(piece, start, end);
-    }
-
     function getCoordInfo(coord) {
         var info = {
+            isOnBoard: false,
             isEmpty: false, // note: true implies isOnBoard is true
             isFriendly: false, // note: true implies isEmpty is false
         };
@@ -264,9 +264,12 @@ class Chxess {
         if (coord == null) { // stop if the coord is invalid
             return info;
         } else {
+            info.isOnBoard = true;
+
             var piece = board.get(coord);
             info.isEmpty = piece == null;
             info.isFriendly = !info.isEmpty && piece.color == turn;
+
             return info;
         }
     }
