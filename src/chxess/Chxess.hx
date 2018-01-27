@@ -7,6 +7,31 @@ import chxess.Coord;
 import chxess.Piece;
 
 
+// Basically just a rank/file pair
+abstract Vec(Array<Int>) {
+
+    inline public function new(arr) {
+        this = [arr[0], arr[1]];
+    }
+
+    public var rank(get, never):Int;
+    inline function get_rank() {
+        return this[0];
+    }
+
+    public var file(get, never):Int;
+    inline function get_file() {
+        return this[1];
+    }
+
+    @:from
+    static inline public function fromArrayInt(arr:Array<Int>) {
+        return new Vec(arr);
+    }
+
+}
+
+
 /***
  * Main class
  */
@@ -133,7 +158,7 @@ class Chxess {
         if (piece == null) {
             return [];
         } else {
-            var moveCoords;
+            var moves;
 
             // only calculate moves if the piece of the current turn color
             if (turn != piece.color) {
@@ -142,129 +167,92 @@ class Chxess {
 
             switch (piece.type) {
                 case Rook:
-                    moveCoords = getRookMoveCoords(coord);
+                    moves = getRookMoves(coord);
                 case Bishop:
-                    moveCoords = getBishopMoveCoords(coord);
+                    moves = getBishopMoves(coord);
                 case Queen:
-                    moveCoords = getQueenMoveCoords(coord);
+                    moves = getQueenMoves(coord);
                 case Knight:
-                    moveCoords = getKnightMoveCoords(coord);
+                    moves = getKnightMoves(coord);
                 case King:
-                    moveCoords = getKingMoveCoords(coord);
+                    moves = getKingMoves(coord);
                 case Pawn:
-                    moveCoords = getPawnMoveCoords(coord, piece.color);
+                    moves = getPawnMoves(coord, piece.color);
                 default:
-                    moveCoords = [];
+                    moves = [];
             }
-            return moveCoordsToStrings(moveCoords,
-                Piece.typeToString(piece.type));
+            return moves.map(function (move) {
+                return move.toString();
+            });
         }
     }
 
-    function moveCoordsToStrings(moveCoords, piecePrefix:String) {
-        return moveCoords.map(function (moveCoord) {
-            return piecePrefix + moveCoord.toString();
-        });
-    }
-
-    function getQueenMoveCoords(coord) {
-        return getRiderMoveCoords(coord, [
+    inline function getQueenMoves(coord) {
+        return getAllMovesInDirs(coord, [
             [1, 1], [1, -1], [-1, 1], [-1, -1],
             [1, 0], [-1, 0], [0, 1], [0, -1],
         ]);
     }
 
-    function getBishopMoveCoords(coord) {
-        return getRiderMoveCoords(coord, [[1, 1], [1, -1], [-1, 1], [-1, -1]]);
+    inline function getBishopMoves(coord) {
+        return getAllMovesInDirs(coord, [[1, 1], [1, -1], [-1, 1], [-1, -1]]);
     }
 
-    function getRookMoveCoords(coord) {
-        return getRiderMoveCoords(coord, [[1, 0], [-1, 0], [0, 1], [0, -1]]);
+    inline function getRookMoves(coord) {
+        return getAllMovesInDirs(coord, [[1, 0], [-1, 0], [0, 1], [0, -1]]);
     }
 
-    function getKnightMoveCoords(coord) {
-        return getLeaperMoveCoords(coord, [
+    inline function getKnightMoves(coord) {
+        return getAllMovesInDirs(coord, 1, [
             [-1, -2], [-1, 2], [-2, -1], [-2, 1],
             [1, -2], [1, 2], [2, -1], [2, 1],
         ]);
     }
 
-    function getKingMoveCoords(coord) {
-        return getLeaperMoveCoords(coord, [
+    inline function getKingMoves(coord) {
+        return getAllMovesInDirs(coord, 1, [
             [0, 1], [1, 1], [1, 0], [1, -1],
             [0, -1], [-1, -1], [-1, 0], [-1, 1],
         ]);
     }
 
-    function getPawnMoveCoords(startCoord, color:Color) {
-        var moves = [];
+    inline function getPawnMoves(coord:Coord, color:Color) {
+        var isOnHomeRow = coord.rank == switch (color) {
+            case White: R2;
+            case Black: R7;
+        };
         var rankDir = switch (color) {
             case White: 1;
             case Black: -1;
         };
-        var homeRow:Rank = switch (color) {
-            case White: R2;
-            case Black: R7;
-        };
 
-        // single pawn push
-        var coord = getCoordOffsetBy(startCoord, rankDir, 0);
-        var coordInfo = getCoordInfo(coord);
-        if (coordInfo.isEmpty) {
-            moves.push(coord);
-        } else {
-            // if the single push is blocked, the double push is as well
-            // so stop here
-            return moves;
-        }
-
-        // double pawn push
-        if (startCoord.rank == homeRow) {
-            var coord = getCoordOffsetBy(startCoord, rankDir * 2, 0);
-            var coordInfo = getCoordInfo(coord);
-            if (coordInfo.isEmpty) {
-                moves.push(coord);
-            }
-        }
-
-        return moves;
+        return getAllMovesInDirs(coord, isOnHomeRow ? 2 : 1, [[rankDir, 0]]);
     }
 
-    function getRiderMoveCoords(startCoord, dirs:Array<Array<Int>>) {
+    function getAllMovesInDirs(startCoord, ?maxDist=8, dirs:Array<Vec>) {
         var moves = [];
+
         for (dir in dirs) {
-            for (coord in getAllMoveCoordsInDir(startCoord, dir[0], dir[1])) {
-                moves.push(coord);
-            }
+            var dist = 0;
+            var coord = startCoord;
+            var coordInfo;
+            do {
+                coord = getCoordOffsetBy(coord, dir);
+                coordInfo = getCoordInfo(coord);
+                if (coordInfo.isEmpty) {
+                    moves.push(createMove(startCoord, coord));
+                }
+                dist += 1;
+            } while (coordInfo.isEmpty && dist < maxDist);
         }
+
         return moves;
     }
 
-    function getLeaperMoveCoords(startCoord, offsets:Array<Array<Int>>) {
-        var moves = [];
-        for (offset in offsets) {
-            var coord = getCoordOffsetBy(startCoord, offset[0], offset[1]);
-            var coordInfo = getCoordInfo(coord);
-            if (coordInfo.isEmpty) {
-                moves.push(coord);
-            }
-        }
-        return moves;
-    }
+    function createMove(start, end) {
+        var piece = board.get(start);
 
-    function getAllMoveCoordsInDir(coord, rankDir, fileDir) {
-        var moves = [];
-
-        var coordInfo;
-        do {
-            coord = getCoordOffsetBy(coord, rankDir, fileDir);
-            coordInfo = getCoordInfo(coord);
-            if (coordInfo.isEmpty) {
-                moves.push(coord);
-            }
-        } while (coordInfo.isEmpty);
-
-        return moves;
+        return new Move(piece, start, end);
     }
 
     function getCoordInfo(coord) {
@@ -283,12 +271,12 @@ class Chxess {
         }
     }
 
-    function getCoordOffsetBy(startCoord:Coord, rankOffset, fileOffset) {
+    function getCoordOffsetBy(startCoord:Coord, offset:Vec) {
         var rankIndex = startCoord.rank.getIndex();
         var fileIndex = startCoord.file.getIndex();
 
-        rankIndex += rankOffset;
-        fileIndex += fileOffset;
+        rankIndex += offset.rank;
+        fileIndex += offset.file;
 
         // make sure the new coord is within bounds
         if (rankIndex < 0 || rankIndex > 7 || fileIndex < 0 || fileIndex > 7) {
