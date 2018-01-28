@@ -40,6 +40,7 @@ export function moveGenerationMacro(t, settings) {
         return expected
             .map((v) => v.split(' ')) // split each sub array by spaces
             .reduce((a, v) => a.concat(v), []) // flatten the array
+            .map((v) => v.trim())
             .filter((v) => v.length > 0) // remove empty strings
             .sort()
     }
