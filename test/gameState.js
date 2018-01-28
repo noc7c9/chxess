@@ -16,3 +16,13 @@ test('setting the turn works', t => {
     chx.setTurn('w')
     t.is('w', chx.getTurn())
 })
+
+test('toggling the turn works', t => {
+    const chx = new Chxess()
+
+    t.is('w', chx.getTurn())
+    chx.toggleTurn()
+    t.is('b', chx.getTurn())
+    chx.toggleTurn()
+    t.is('w', chx.getTurn())
+})

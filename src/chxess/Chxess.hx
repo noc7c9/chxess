@@ -97,6 +97,13 @@ class Chxess {
         }
     }
 
+    public function toggleTurn() {
+        turn = switch (turn) {
+            case White: Black;
+            case Black: White;
+        }
+    }
+
     public function getBoard() {
         var ranks = [];
         for (r in Rank.createAll()) {
