@@ -158,8 +158,37 @@ class Chxess {
         }
     }
 
-    public function getMoves(coord) {
-        var coord = Coord.fromString(coord);
+    public function getMoves(?coord) {
+        if (coord != null) {
+            return getMovesSingle(Coord.fromString(coord));
+        } else {
+            return getMovesAll();
+        }
+    }
+
+    function getMovesAll() {
+        var moves = [];
+        for (coord in board.keys()) {
+            var piece = board.get(coord);
+            if (piece.color == turn) {
+                var sMoves = getMovesSingle(coord);
+
+                var coordStr = coord.toString();
+                var pieceStr = piece.toString();
+                var numMoves = sMoves.length;
+                var movesStr = sMoves
+                    .map(function (v) {
+                        return v.toString();
+                    })
+                    .join(', ');
+
+                moves = moves.concat(sMoves);
+            }
+        }
+        return moves;
+    }
+
+    function getMovesSingle(coord:Coord) {
         var piece = board.get(coord);
 
         if (piece == null) {
