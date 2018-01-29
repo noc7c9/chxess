@@ -68,3 +68,17 @@ test('pawn double push is blocked by friendly pieces on square in front',
         square: 'c2',
         expected: '',
 })
+
+test('pawn can\'t capture pieces in front of it',
+    moveGenerationMacro, {
+        board: ['bd5', 'wd4'],
+        square: 'd4',
+        expected: '',
+})
+
+test('pawn captures diagonally',
+    moveGenerationMacro, {
+        board: ['bc5', 'be5', 'wd4'],
+        square: 'd4',
+        expected: 'dxc5 dxe5 d5',
+})

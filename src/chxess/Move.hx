@@ -21,7 +21,12 @@ class Move {
         var pieceStr = Piece.typeToString(piece.type);
         var endStr = end.toString();
         if (this.capture != null) {
-            return '${pieceStr}x${endStr}';
+            if (this.piece.type == Pawn) {
+                var fileStr = Coord.fileToString(start.file);
+                return '${fileStr}${pieceStr}x${endStr}';
+            } else {
+                return '${pieceStr}x${endStr}';
+            }
         } else {
             return pieceStr + endStr;
         }

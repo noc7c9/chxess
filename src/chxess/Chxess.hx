@@ -239,17 +239,17 @@ class Chxess {
     }
 
     inline function getKnightMoves(coord) {
-        return getAllMovesInDirs(coord, 1, [
+        return getAllMovesInDirs(coord, [
             [-1, -2], [-1, 2], [-2, -1], [-2, 1],
             [1, -2], [1, 2], [2, -1], [2, 1],
-        ]);
+        ], { maxDist: 1 });
     }
 
     inline function getKingMoves(coord) {
-        return getAllMovesInDirs(coord, 1, [
+        return getAllMovesInDirs(coord, [
             [0, 1], [1, 1], [1, 0], [1, -1],
             [0, -1], [-1, -1], [-1, 0], [-1, 1],
-        ]);
+        ], { maxDist: 1 });
     }
 
     inline function getPawnMoves(coord:Coord, color:Color) {
@@ -262,10 +262,33 @@ class Chxess {
             case Black: -1;
         };
 
-        return getAllMovesInDirs(coord, isOnHomeRow ? 2 : 1, [[rankDir, 0]]);
+        var normalMoves = getAllMovesInDirs(coord, [[rankDir, 0]], {
+            maxDist: isOnHomeRow ? 2 : 1,
+            excludeCaptures: true,
+        });
+        var capturingMoves = getAllMovesInDirs(coord,
+                [[rankDir, 1], [rankDir, -1]], {
+            maxDist: 1,
+            onlyCaptures: true,
+        });
+
+        return normalMoves.concat(capturingMoves);
     }
 
-    function getAllMovesInDirs(startCoord, ?maxDist=8, dirs:Array<Vec>) {
+    function getAllMovesInDirs(startCoord, dirs:Array<Vec>,
+            ?opts:{ ?maxDist:Int, ?excludeCaptures:Bool, ?onlyCaptures:Bool }) {
+
+        var maxDist = 8;
+        var excludeCaptures = false;
+        var onlyCaptures = false;
+        if (opts != null) {
+            maxDist = opts.maxDist != null ? opts.maxDist : maxDist;
+            excludeCaptures = opts.excludeCaptures != null
+                ? opts.excludeCaptures : excludeCaptures;
+            onlyCaptures = opts.onlyCaptures != null
+                ? opts.onlyCaptures : onlyCaptures;
+        }
+
         var moves = [];
 
         for (dir in dirs) {
@@ -275,15 +298,19 @@ class Chxess {
             do {
                 coord = getCoordOffsetBy(coord, dir);
                 coordInfo = getCoordInfo(coord);
-                if (coordInfo.isEmpty
-                        || (coordInfo.isOnBoard && !coordInfo.isFriendly)) {
-                    var move = new Move(
-                        board.get(startCoord),
-                        startCoord, coord,
-                        board.get(coord));
-                    moves.push(move);
+                if (coordInfo.isOnBoard) {
+                    var isNormalMove = coordInfo.isEmpty;
+                    var isCapturingMove = !coordInfo.isEmpty && !coordInfo.isFriendly;
+                    if ((!onlyCaptures && isNormalMove)
+                            || (!excludeCaptures && isCapturingMove)) {
+                        var move = new Move(
+                            board.get(startCoord),
+                            startCoord, coord,
+                            board.get(coord));
+                        moves.push(move);
+                    }
+                    dist += 1;
                 }
-                dist += 1;
             } while (coordInfo.isEmpty && dist < maxDist);
         }
 
