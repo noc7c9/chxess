@@ -5,10 +5,10 @@ test('queen moves from middle of an empty board',
     moveGenerationMacro, {
         board: ['wQd4'],
         square: 'd4',
-        expected: [
-            'Qa1 Qa4 Qa7 Qb2 Qb4 Qb6 Qc3 Qc4 Qc5 Qd1 Qd2 Qd3 Qd5',
-            'Qd6 Qd7 Qd8 Qe3 Qe4 Qe5 Qf2 Qf4 Qf6 Qg1 Qg4 Qg7 Qh4 Qh8',
-        ],
+        expected: `Qd4-a1 Qd4-a4 Qd4-a7 Qd4-b2 Qd4-b4 Qd4-b6 Qd4-c3 Qd4-c4
+            Qd4-c5 Qd4-d1 Qd4-d2 Qd4-d3 Qd4-d5 Qd4-d6 Qd4-d7 Qd4-d8 Qd4-e3
+            Qd4-e4 Qd4-e5 Qd4-f2 Qd4-f4 Qd4-f6 Qd4-g1 Qd4-g4 Qd4-g7 Qd4-h4
+            Qd4-h8`,
 })
 
 
@@ -32,15 +32,15 @@ test('queen is blocked by friendly pieces',
     moveGenerationMacro, {
         board: ['wd8', 'wa7', 'we5', 'wc4', 'wQd4', 'wg4', 'wd2', 'wf2', 'wa1'],
         square: 'd4',
-        expected: 'Qb2 Qb6 Qc3 Qc5 Qd3 Qd5 Qd6 Qd7 Qe3 Qe4 Qf4',
+        expected: `Qd4-b2 Qd4-b6 Qd4-c3 Qd4-c5 Qd4-d3 Qd4-d5 Qd4-d6 Qd4-d7
+            Qd4-e3 Qd4-e4 Qd4-f4`,
 })
 
 test('queen capturing moves',
     moveGenerationMacro, {
         board: ['bb2', 'bb4', 'bb6', 'bd3', 'bd7', 'bg1', 'bh4', 'bh8', 'wQd4'],
         square: 'd4',
-        expected: [
-            'Qc3 Qc4 Qc5 Qd5 Qd6 Qe3 Qe4 Qe5 Qf2 Qf4 Qf6 Qg4 Qg7',
-            'Qxb2 Qxb4 Qxb6 Qxd3 Qxd7 Qxg1 Qxh4 Qxh8',
-        ]
+        expected: `Qd4-c3 Qd4-c4 Qd4-c5 Qd4-d5 Qd4-d6 Qd4-e3 Qd4-e4 Qd4-e5
+            Qd4-f2 Qd4-f4 Qd4-f6 Qd4-g4 Qd4-g7 Qd4xb2 Qd4xb4 Qd4xb6 Qd4xd3
+            Qd4xd7 Qd4xg1 Qd4xh4 Qd4xh8`,
 })

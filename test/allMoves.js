@@ -1,16 +1,38 @@
 import test from 'ava'
 import {moveGenerationMacro} from './_helpers'
 
+test('moves from empty square',
+    moveGenerationMacro, {
+        board: [],
+        square: 'a1',
+        expected: '',
+})
+
 test('simple multi piece layout',
     moveGenerationMacro, {
-        board: ['ba1', 'bb4', 'bc7', 'be1', 'be3', 'be8', 'bf5', 'bh4', 'wBc3',
-            'wBd7', 'wBf3', 'wNb6', 'wNc1', 'wNh3', 'wQb8', 'wRd5', 'wRh1'],
+        board: [
+            'ba1', 'bb4', 'bc7', 'be1', 'be3', 'be8', 'bf5', 'bh4',
+
+            'wd2',
+            'wNb6', 'wNc1', 'wNh3',
+            'wBc3', 'wBd7', 'wBf3',
+            'wRd5', 'wRh1',
+            'wQb8'],
         expected: `
-            Qa7 Qa8 Qb7 Qc8 Qd8 Qxc7 Qxe8
-            Ba4 Bb2 Bb5 Bc6 Bc8 Bd1 Bd2 Bd4 Be2 Be4 Be5 Be6 Bf6 Bg2 Bg4 Bg7 Bh5 Bh8
-            Bxa1 Bxb4 Bxe1 Bxe8 Bxf5
-            Ra5 Rb5 Rc5 Rd1 Rd2 Rd3 Rd4 Rd6 Re5 Rf1 Rg1 Rh2
-            Rxe1 Rxf5
-            Na2 Na4 Na8 Nb3 Nc4 Nc8 Nd3 Ne2 Nf2 Nf4 Ng1 Ng5
+            d2-d3 d2-d4 d2xe3
+
+            Nb6-a4 Nb6-a8 Nb6-c4 Nb6-c8
+            Nc1-a2 Nc1-b3 Nc1-d3 Nc1-e2
+            Nh3-f2 Nh3-f4 Nh3-g1 Nh3-g5
+
+            Bc3-b2 Bc3-d4 Bc3-e5 Bc3-f6 Bc3-g7 Bc3-h8
+            Bc3xa1 Bc3xb4
+            Bd7-a4 Bd7-b5 Bd7-c6 Bd7-c8 Bd7-e6
+            Bd7xe8 Bd7xf5
+            Bf3-d1 Bf3-e2 Bf3-e4 Bf3-g2 Bf3-g4 Bf3-h5
+
+            Rd5-a5 Rd5-b5 Rd5-c5 Rd5-d3 Rd5-d4 Rd5-d6 Rd5-e5 Rd5xf5
+            Rh1-f1 Rh1-g1 Rh1-h2 Rh1xe1
+            Qb8-a7 Qb8-a8 Qb8-b7 Qb8-c8 Qb8-d8 Qb8xc7 Qb8xe8
         `,
 })

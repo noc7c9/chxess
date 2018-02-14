@@ -5,7 +5,7 @@ test('king moves from middle of an empty board',
     moveGenerationMacro, {
         board: ['wKd4'],
         square: 'd4',
-        expected: 'Kc3 Kc4 Kc5 Kd3 Kd5 Ke3 Ke4 Ke5',
+        expected: `Kd4-c3 Kd4-c4 Kd4-c5 Kd4-d3 Kd4-d5 Kd4-e3 Kd4-e4 Kd4-e5`,
 })
 
 
@@ -29,12 +29,12 @@ test('king is blocked by friendly pieces',
     moveGenerationMacro, {
         board: ['wc5', 'we5', 'wKd4', 'we4', 'wd3'],
         square: 'd4',
-        expected: 'Kc3 Kc4 Kd5 Ke3',
+        expected: `Kd4-c3 Kd4-c4 Kd4-d5 Kd4-e3`,
 })
 
 test('king capturing moves',
     moveGenerationMacro, {
         board: ['bc3', 'bd5', 'be5', 'wKd4'],
         square: 'd4',
-        expected: 'Kc4 Kc5 Kd3 Ke3 Ke4 Kxc3 Kxd5 Kxe5',
+        expected: `Kd4-c4 Kd4-c5 Kd4-d3 Kd4-e3 Kd4-e4 Kd4xc3 Kd4xd5 Kd4xe5`,
 })

@@ -19,17 +19,12 @@ class Move {
 
     public function toString() {
         var pieceStr = Piece.typeToString(piece.type);
+        var startStr = start.toString();
         var endStr = end.toString();
-        if (this.capture != null) {
-            if (this.piece.type == Pawn) {
-                var fileStr = Coord.fileToString(start.file);
-                return '${fileStr}${pieceStr}x${endStr}';
-            } else {
-                return '${pieceStr}x${endStr}';
-            }
-        } else {
-            return pieceStr + endStr;
-        }
+
+        var joinChar = this.capture != null ? 'x' : '-';
+
+        return pieceStr + startStr + joinChar + endStr;
     }
 
 }
