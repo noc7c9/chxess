@@ -166,6 +166,42 @@ class Chxess {
         }
     }
 
+    public function playMove(move) {
+        var move = Move.fromString(move);
+
+        var piece = board.get(move.start);
+
+        // can't play from an empty square
+        if (piece == null) {
+            return false;
+        }
+
+        // the piece must be owned by the current side
+        if (piece.color != turn) {
+            return false;
+        }
+
+        // the move must be a valid move for that piece
+        var isValid = false;
+        var moveStr = move.toString();
+        for (validMove in getMovesAll()) {
+            if (moveStr == validMove) {
+                isValid = true;
+                break;
+            }
+        }
+        if (!isValid) {
+            return false;
+        }
+
+        board.remove(move.start);
+        board.set(move.end, piece);
+
+        toggleTurn();
+
+        return true;
+    }
+
     function getMovesAll() {
         var moves = [];
         for (coord in board.keys()) {

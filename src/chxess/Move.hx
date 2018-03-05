@@ -27,4 +27,16 @@ class Move {
         return pieceStr + startStr + joinChar + endStr;
     }
 
+    static public function fromString(move:String) {
+        var startIndex = move.length == 6 ? 1 : 0;
+
+        var startCoord = Coord.fromString(move.substr(startIndex, 2));
+        var endCoord = Coord.fromString(move.substr(startIndex+3, 2));
+
+        var piece = new Piece(null,
+            Piece.typeFromString(move.substring(0, startIndex)));
+
+        return new Move(piece, startCoord, endCoord);
+    }
+
 }

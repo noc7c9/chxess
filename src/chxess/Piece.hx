@@ -10,7 +10,7 @@ enum Type {
 
 class Piece {
 
-    public var color(default, null):Color;
+    public var color(default, null):Null<Color>;
     public var type(default, null):Type;
 
     public function new(color, type) {
