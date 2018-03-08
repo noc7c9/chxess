@@ -4,6 +4,7 @@
   "description": "Implementation of chess in Haxe.",
   "scripts": {
     "build": "haxe build.hxml",
+    "build:watch": "nodemon --exec \"haxe build.hxml -debug\" --ext hx --watch src --verbose",
     "test": "haxe build.hxml -debug && ava",
     "test:watch": "concurrently --raw \"nodemon --quiet --exec \\\"haxe build.hxml -debug\\\" --ext hx --watch src\" \"ava --watch\""
   },
