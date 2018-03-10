@@ -390,4 +390,36 @@ class Chxess {
         return new Coord(newRank, newFile);
     }
 
+    function toAscii() {
+        var fileIndicator = '  a b c d e f g h';
+        var blackPieces = '   Black: K Q R B N P';
+        var whitePieces = '   White: k q r b n p';
+        var ranks = [fileIndicator + whitePieces];
+        for (r in Rank.createAll()) {
+            var file = [Coord.rankToString(r)];
+            for (f in File.createAll()) {
+                var piece = board.get(new Coord(r, f));
+                if (piece != null) {
+                    var pieceStr = Piece.typeToString(piece.type);
+                    if (pieceStr == '') {
+                        pieceStr = 'p';
+                    }
+                    if (piece.color == Color.Black) {
+                        pieceStr = pieceStr.toUpperCase();
+                    } else {
+                        pieceStr = pieceStr.toLowerCase();
+                    }
+                    file.push(pieceStr);
+                } else {
+                    file.push('-');
+                }
+            }
+            file.push(Coord.rankToString(r));
+            ranks.push(file.join(' '));
+        }
+        ranks.push(fileIndicator + blackPieces);
+        ranks.reverse();
+        return ranks.join('\n');
+    }
+
 }
