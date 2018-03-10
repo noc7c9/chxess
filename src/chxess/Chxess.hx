@@ -167,7 +167,7 @@ class Chxess {
     }
 
     public function playMove(move) {
-        var move = Move.fromString(move);
+        var move = Move.fromString(move, this);
 
         var piece = board.get(move.start);
 

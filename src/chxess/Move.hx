@@ -27,16 +27,22 @@ class Move {
         return pieceStr + startStr + joinChar + endStr;
     }
 
-    static public function fromString(move:String) {
+    static public function fromString(move:String, context:Chxess) {
         var startIndex = move.length == 6 ? 1 : 0;
 
         var startCoord = Coord.fromString(move.substr(startIndex, 2));
         var endCoord = Coord.fromString(move.substr(startIndex+3, 2));
 
-        var piece = new Piece(null,
+        var piece = new Piece(Piece.colorFromString(context.getTurn()),
             Piece.typeFromString(move.substring(0, startIndex)));
 
-        return new Move(piece, startCoord, endCoord);
+        var capturedPieceStr = context.getSquare(endCoord.toString());
+        var capturedPiece = null;
+        if (capturedPieceStr != '') {
+            capturedPiece = Piece.fromString(capturedPieceStr);
+        }
+
+        return new Move(piece, startCoord, endCoord, capturedPiece);
     }
 
 }

@@ -65,3 +65,10 @@ test('playMove returns true/false based on success', (t) => {
     // white tries to play an invalid move
     t.false(chx.playMove('rd6-c7'));
 })
+
+test('capturing moves',
+    playMoveMacro, {
+        board: ['bNb5', 'bRa4', 'bd4', 'wBg7', 'wQh4', 'wc3'],
+        moves: ['c3xd4', 'Nb5xd4', 'Bg7xd4', 'Ra4xd4', 'Qh4xd4'],
+        expected: ['wQd4'],
+})

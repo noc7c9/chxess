@@ -56,13 +56,24 @@ export function playMoveMacro(t, settings) {
         return turn === 'w' ? 'b' : 'w';
     }
 
+    function debug() {
+        if (settings.debug) {
+            console.log.apply(console, arguments);
+        }
+    }
+
     const chx = createBoard(settings.board, settings.turn)
     const expected = createBoard(settings.expected,
         otherTurn(settings.turn)).getBoard();
 
     for (let move of settings.moves) {
-        chx.playMove(move);
+        debug(`--- ${chx.getTurn()}: ${move} ---`);
+        debug(chx.toAscii());
+        debug(`Move ${chx.playMove(move) ? 'success' : 'failed'}`);
+        debug();
     }
+    debug('--- final ---');
+    debug(chx.toAscii());
 
     const actual = chx.getBoard();
 
