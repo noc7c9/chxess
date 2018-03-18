@@ -42,7 +42,7 @@ class Chxess {
     var board:HashMap<Coord, Piece>;
     var turn:Color = White;
 
-    public function new(?initialLayout) {
+    public function new(?initialLayout, ?initialTurn) {
         board = new HashMap();
 
         // setup board
@@ -76,6 +76,14 @@ class Chxess {
         if (initialLayout != null) {
             setBoard(initialLayout);
         }
+
+        if (initialTurn != null) {
+            setTurn(initialTurn);
+        }
+    }
+
+    public function clone() {
+        return new Chxess(getBoard(), getTurn());
     }
 
     public function getTurn() {
@@ -114,6 +122,7 @@ class Chxess {
             var move = Move.fromString(moveStr, this);
             if (move.capture != null && move.capture.type == Type.King) {
                 canTakeKing = true;
+                break;
             }
         }
 
@@ -178,11 +187,13 @@ class Chxess {
     }
 
     public function getMoves(?coord) {
+        var rawMoves;
         if (coord != null) {
-            return getMovesSingle(Coord.fromString(coord));
+            rawMoves = getMovesSingle(Coord.fromString(coord));
         } else {
-            return getMovesAll();
+            rawMoves = getMovesAll();
         }
+        return filterMovesIntoCheck(rawMoves);
     }
 
     public function playMove(move) {
@@ -219,6 +230,15 @@ class Chxess {
         toggleTurn();
 
         return true;
+    }
+
+    function filterMovesIntoCheck(moves) {
+        return moves.filter(function (move) {
+            var chx = clone();
+            chx.playMove(move);
+            chx.toggleTurn();
+            return !chx.isInCheck();
+        });
     }
 
     function getMovesAll() {

@@ -44,9 +44,18 @@ export function moveGenerationMacro(t, settings) {
             .sort()
     }
 
+    function debug() {
+        if (settings.debug) {
+            console.log.apply(console, arguments);
+        }
+    }
+
     const chx = createBoard(settings.board, settings.turn)
     const expected = parseExpectedMoves(settings.expected)
     const actual = chx.getMoves(settings.square).sort()
+
+    debug('Expected: ', expected);
+    debug('Actual:   ', actual);
 
     t.deepEqual(actual, expected)
 }

@@ -36,5 +36,5 @@ test('king capturing moves',
     moveGenerationMacro, {
         board: ['bc3', 'bd5', 'be5', 'wKd4'],
         square: 'd4',
-        expected: `Kd4-c4 Kd4-c5 Kd4-d3 Kd4-e3 Kd4-e4 Kd4xc3 Kd4xd5 Kd4xe5`,
+        expected: `Kd4-c5 Kd4-d3 Kd4-e3 Kd4xc3 Kd4xd5 Kd4xe5`,
 })

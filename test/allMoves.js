@@ -17,7 +17,8 @@ test('simple multi piece layout',
             'wNb6', 'wNc1', 'wNh3',
             'wBc3', 'wBd7', 'wBf3',
             'wRd5', 'wRh1',
-            'wQb8'],
+            'wQb8',
+        ],
         expected: `
             d2-d3 d2-d4 d2xe3
 
@@ -35,4 +36,20 @@ test('simple multi piece layout',
             Rh1-f1 Rh1-g1 Rh1-h2 Rh1xe1
             Qb8-a7 Qb8-a8 Qb8-b7 Qb8-c8 Qb8-d8 Qb8xc7 Qb8xe8
         `,
+})
+
+test('can\'t move into check',
+    moveGenerationMacro, {
+        board: [
+            'bBf3', 'bRb3', 'bd6', 'wKd4',
+        ],
+        expected: 'Kd4-c4',
+})
+
+test('can\'t ignore check',
+    moveGenerationMacro, {
+        board: [
+            'bRd8', 'bRe8', 'bRh4', 'bRh5', 'wKd4', 'wQc6', 'wQf3', 'wQf6',
+        ],
+        expected: 'Kd4-c3',
 })
