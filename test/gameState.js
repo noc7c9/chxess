@@ -1,4 +1,5 @@
 import test from 'ava'
+import {createBoard} from './_helpers'
 import {Chxess} from '../build/chxess'
 
 test('turn starts on white', t => {
@@ -25,4 +26,16 @@ test('toggling the turn works', t => {
     t.is('b', chx.getTurn())
     chx.toggleTurn()
     t.is('w', chx.getTurn())
+})
+
+test('white in check detection', t => {
+    const chx = createBoard(['bc6', 'wKd5'], 'w');
+
+    t.true(chx.isInCheck());
+})
+
+test('black in check detection', t => {
+    const chx = createBoard(['bKe5', 'wNf3'], 'b');
+
+    t.true(chx.isInCheck());
 })

@@ -104,6 +104,25 @@ class Chxess {
         }
     }
 
+    public function isInCheck() {
+        // temporarily toggle turn
+        toggleTurn();
+
+        // check if the other side can take your king
+        var canTakeKing = false;
+        for (moveStr in getMovesAll()) {
+            var move = Move.fromString(moveStr, this);
+            if (move.capture != null && move.capture.type == Type.King) {
+                canTakeKing = true;
+            }
+        }
+
+        // toggle turn back
+        toggleTurn();
+
+        return canTakeKing;
+    }
+
     public function getBoard() {
         var ranks = [];
         for (r in Rank.createAll()) {
