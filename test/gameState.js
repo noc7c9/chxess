@@ -39,3 +39,20 @@ test('black in check detection', t => {
 
     t.true(chx.isInCheck());
 })
+
+test('white in checkmate', t => {
+    const chx = createBoard(['bKc1', 'bQa3', 'wKa1']);
+
+    t.true(chx.isInCheckmate());
+
+    t.true(chx.isGameOver());
+})
+
+test('white in stalemate', t => {
+    const chx = createBoard(['bKc1', 'bRe2', 'wKa1']);
+
+    t.true(chx.isInStalemate());
+
+    t.false(chx.isInCheckmate());
+    t.true(chx.isGameOver());
+})

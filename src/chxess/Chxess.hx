@@ -132,6 +132,18 @@ class Chxess {
         return canTakeKing;
     }
 
+    public function isInCheckmate() {
+        return isInCheck() && getMoves().length == 0;
+    }
+
+    public function isInStalemate() {
+        return !isInCheck() && getMoves().length == 0;
+    }
+
+    public function isGameOver() {
+        return getMoves().length == 0;
+    }
+
     public function getBoard() {
         var ranks = [];
         for (r in Rank.createAll()) {
