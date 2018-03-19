@@ -668,5 +668,35 @@
                     .innerHTML = `Switch to ${getOtherMode()} Mode`;
             }
         </script>
+        <script src='./build/chxess.min.js'></script>
+        <script>
+            function playRandomGame(intervalDuration) {
+                const chx = new Chxess();
+                let intervalId;
+
+                function iterate() {
+                    console.log(chx.toAscii());
+                    if (chx.isGameOver()) {
+                        console.log('Game Over')
+                        console.log(chx.isCheckMate()
+                            ? 'Checkmate'
+                            : 'Stalemate')
+                        clearInterval(intervalId);
+                    } else {
+                        const moves = chx.getMoves()
+                        const chosen = moves[Math.floor(Math.random() * moves.length)];
+                        chx.playMove(chosen)
+                    }
+                }
+
+                window.stopRandomGame = function () {
+                    clearInterval(intervalId);
+                    delete window.stopRandomGame;
+                }
+
+                intervalId = setInterval(iterate, intervalDuration || 1000);
+                iterate()
+            }
+        </script>
     </body>
 </html>
