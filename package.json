@@ -6,7 +6,8 @@
     "build": "haxe build.hxml --no-traces & uglifyjs --mangle --output build/chxess.min.js build/chxess.js",
     "build:watch": "nodemon --exec \"haxe build.hxml -debug\" --ext hx --watch src --verbose",
     "test": "haxe build.hxml -debug && ava",
-    "test:watch": "concurrently --raw \"nodemon --quiet --exec \\\"haxe build.hxml -debug\\\" --ext hx --watch src\" \"ava --watch\""
+    "test:watch": "concurrently --raw \"nodemon --quiet --exec \\\"haxe build.hxml -debug\\\" --ext hx --watch src\" \"ava --watch\"",
+    "lint": "eslint ."
   },
   "author": "Athir Saleem <noc7c9@gmail.com>",
   "license": "MIT",

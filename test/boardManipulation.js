@@ -1,8 +1,8 @@
-import test from 'ava'
-import {Chxess} from '../build/chxess'
+import test from 'ava';
+import {Chxess} from '../build/chxess';
 
 test('initial board layout is correct', t => {
-    const chx = new Chxess()
+    const chx = new Chxess();
 
     const initialLayout = [
         [ 'bR', 'bN', 'bB', 'bQ', 'bK', 'bB', 'bN', 'bR', ],
@@ -13,13 +13,13 @@ test('initial board layout is correct', t => {
         [ '',   '',   '',   '',   '',   '',   '',   '',   ],
         [ 'w',  'w',  'w',  'w',  'w',  'w',  'w',  'w',  ],
         [ 'wR', 'wN', 'wB', 'wQ', 'wK', 'wB', 'wN', 'wR', ],
-    ]
+    ];
 
-    t.deepEqual(initialLayout, chx.getBoard())
-})
+    t.deepEqual(initialLayout, chx.getBoard());
+});
 
 test('setting the board', t => {
-    const chx = new Chxess()
+    const chx = new Chxess();
 
     const layout = [
         ['',   '',   'b',  '',   'b',  'wQ', 'bQ', '',   ],
@@ -30,14 +30,14 @@ test('setting the board', t => {
         ['',   'bB', 'wK', '',   'w',  '',   '',   '',   ],
         ['',   '',   'w',  '',   '',   '',   'w',  '',   ],
         ['w',  '',   '',   'bR', 'bN', 'w',  'bN', '',   ],
-    ]
+    ];
 
     // set the board to a random layout
-    chx.setBoard(layout)
+    chx.setBoard(layout);
 
     // make sure the board layout was actually set
-    t.deepEqual(layout, chx.getBoard())
-})
+    t.deepEqual(layout, chx.getBoard());
+});
 
 test('setting the board via constructor', t => {
     const layout = [
@@ -49,17 +49,17 @@ test('setting the board via constructor', t => {
         ['',   'bB', 'wK', '',   'w',  '',   '',   '',   ],
         ['',   '',   'w',  '',   '',   '',   'w',  '',   ],
         ['w',  '',   '',   'bR', 'bN', 'w',  'bN', '',   ],
-    ]
+    ];
 
     // set the board using the constructor
     const chx = new Chxess(layout);
 
     // make sure the board layout was actually set
-    t.deepEqual(layout, chx.getBoard())
-})
+    t.deepEqual(layout, chx.getBoard());
+});
 
 test('clearing the board', t => {
-    const chx = new Chxess()
+    const chx = new Chxess();
 
     const expectedLayout = [
         [ '', '', '', '', '', '', '', '', ],
@@ -70,15 +70,15 @@ test('clearing the board', t => {
         [ '', '', '', '', '', '', '', '', ],
         [ '', '', '', '', '', '', '', '', ],
         [ '', '', '', '', '', '', '', '', ],
-    ]
+    ];
 
-    chx.clearBoard()
+    chx.clearBoard();
 
-    t.deepEqual(expectedLayout, chx.getBoard())
-})
+    t.deepEqual(expectedLayout, chx.getBoard());
+});
 
 test('getBoard and setBoard use same format', t => {
-    const chx = new Chxess()
+    const chx = new Chxess();
     const originalLayout = [
         ['',   '',   'b',  '',   'b',  'wQ', 'bQ', '',   ],
         ['',   'b',  '',   'wR', '',   '',   'b',  '',   ],
@@ -88,20 +88,20 @@ test('getBoard and setBoard use same format', t => {
         ['',   'bB', 'wK', '',   'w',  '',   '',   '',   ],
         ['',   '',   'w',  '',   '',   '',   'w',  '',   ],
         ['w',  '',   '',   'bR', 'bN', 'w',  'bN', '',   ],
-    ]
-    chx.setBoard(originalLayout)
+    ];
+    chx.setBoard(originalLayout);
 
     const exportedLayout = chx.getBoard();
 
-    chx.clearBoard()
-    chx.setBoard(exportedLayout)
+    chx.clearBoard();
+    chx.setBoard(exportedLayout);
 
-    t.deepEqual(originalLayout, chx.getBoard())
-})
+    t.deepEqual(originalLayout, chx.getBoard());
+});
 
 
 test('getting arbitrary squares', t => {
-    const chx = new Chxess()
+    const chx = new Chxess();
 
     const layout = [
         ['',   '',   'b',  '',   'b',  'wQ', 'bQ', '',   ],
@@ -112,10 +112,10 @@ test('getting arbitrary squares', t => {
         ['',   'bB', 'wK', '',   'w',  '',   '',   '',   ],
         ['',   '',   'w',  '',   '',   '',   'w',  '',   ],
         ['w',  '',   '',   'bR', 'bN', 'w',  'bN', '',   ],
-    ]
+    ];
 
     // start with the board set to a random layout
-    chx.setBoard(layout)
+    chx.setBoard(layout);
 
     // make sure .getSquare returns the right value for every square
     const indexToRankMap = '87654321';
@@ -129,13 +129,13 @@ test('getting arbitrary squares', t => {
             t.is(actual, expected);
         }
     }
-})
+});
 
 
 test('setting arbitrary squares', t => {
-    const chx = new Chxess()
+    const chx = new Chxess();
     // start with an empty board
-    chx.clearBoard()
+    chx.clearBoard();
 
     const layout = [
         ['',   '',   'b',  '',   'b',  'wQ', 'bQ', '',   ],
@@ -146,7 +146,7 @@ test('setting arbitrary squares', t => {
         ['',   'bB', 'wK', '',   'w',  '',   '',   '',   ],
         ['',   '',   'w',  '',   '',   '',   'w',  '',   ],
         ['w',  '',   '',   'bR', 'bN', 'w',  'bN', '',   ],
-    ]
+    ];
 
     // manually place every piece according to the layout with .setSquare
     const indexToRankMap = '87654321';
@@ -159,5 +159,5 @@ test('setting arbitrary squares', t => {
     }
 
     // make sure the layout is as expected
-    t.deepEqual(layout, chx.getBoard())
-})
+    t.deepEqual(layout, chx.getBoard());
+});

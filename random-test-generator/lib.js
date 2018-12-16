@@ -1,8 +1,8 @@
 function pieceToString(piece) {
     if (piece) {
-        return piece.color + piece.type.replace('p', '')
+        return piece.color + piece.type.replace('p', '');
     }
-    return '__'
+    return '__';
 }
 
 exports.output = function (chess) {
@@ -19,13 +19,13 @@ exports.output = function (chess) {
                         // console.log('   ', piece.color + piece.type.replace('p', '') + files[f] + ranks[r])
                         return pieceToString(piece) + files[f] + ranks[r];
                     }
-                    return null
+                    return null;
                 })
-                .filter((v) => v != null)
+                .filter((v) => v != null);
         })
         .reduce(function (acc, val) {
-            return acc.concat(val)
-        })
+            return acc.concat(val);
+        });
 
     console.log(`
     test('random placement: ${fen}',
@@ -35,4 +35,4 @@ exports.output = function (chess) {
             expected: \`${moves}\`,
     })
     `.trim());
-}
+};

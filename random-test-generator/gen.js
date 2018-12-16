@@ -1,7 +1,7 @@
 const {Chess} = require('./chess.min.js');
 const {output} = require('./lib.js');
 
-const chess = new Chess()
+const chess = new Chess();
 
 let hasCheckingMove = false;
 for (let i = 0; i < 100 || hasCheckingMove; i++) {
@@ -13,4 +13,4 @@ for (let i = 0; i < 100 || hasCheckingMove; i++) {
 }
 console.log(chess.ascii());
 
-output(chess)
+output(chess);

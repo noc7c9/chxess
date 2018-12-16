@@ -1,12 +1,12 @@
-import test from 'ava'
-import {moveGenerationMacro} from './_helpers'
+import test from 'ava';
+import {moveGenerationMacro} from './_helpers';
 
 test('moves from empty square',
     moveGenerationMacro, {
         board: [],
         square: 'a1',
         expected: '',
-})
+    });
 
 test('simple multi piece layout',
     moveGenerationMacro, {
@@ -36,7 +36,7 @@ test('simple multi piece layout',
             Rh1-f1 Rh1-g1 Rh1-h2 Rh1xe1
             Qb8-a7 Qb8-a8 Qb8-b7 Qb8-c8 Qb8-d8 Qb8xc7 Qb8xe8
         `,
-})
+    });
 
 test('can\'t move into check',
     moveGenerationMacro, {
@@ -44,7 +44,7 @@ test('can\'t move into check',
             'bBf3', 'bRb3', 'bd6', 'wKd4',
         ],
         expected: 'Kd4-c4',
-})
+    });
 
 test('can\'t ignore check',
     moveGenerationMacro, {
@@ -52,4 +52,4 @@ test('can\'t ignore check',
             'bRd8', 'bRe8', 'bRh4', 'bRh5', 'wKd4', 'wQc6', 'wQf3', 'wQf6',
         ],
         expected: 'Kd4-c3',
-})
+    });
